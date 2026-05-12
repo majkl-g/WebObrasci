@@ -1,0 +1,28 @@
+﻿@page
+@model WebObrasci1.Pages.Obrazac1Model
+@{
+	ViewData["Title"] = "Prijava za upis na doktorski studij na tehničkom fakultetu sveučilišta u Rijeci";
+}
+<h1>@ViewData["Title"]</h1>
+<form method="post">
+
+	<label>Prezime:</label><input type="Text" name="Prezime" />
+	
+	<label>Ime</label><input type="text" name="Ime" />
+	<label>Državljanstvo</label><input type="text" name="Državljanstvo"/>
+
+	<h2>Podaci o školovanju</h2>
+	<label>Završen fakultet:</label><input type="Text" name="Završen_Fakultet" />
+	<label>Datum prvog upisa</label><input type="Text" name="Datum_upisa" />
+	<label>Datum diplome</label><input type="Text" name="Datum_diplome" />
+	<label>Prosjecna ocjena predmeta(bez diplome)</label><input type="number" name="Projecna_Ocjena"/>
+	<label>Ocjena Diplomskog rada</label><input type="number" name="Diplomsi_Ocjena" />
+	<label>Ocjena Obrane rada</label><input type="number" name="Ocjena_Obrane" />
+	<label>Sudjelovanje na međunarodnim znanstvenim skupovima (Priložiti dokaz)</label>
+	<input type="radio" name="Sudjelovanje" /><label>Da</label>
+	<input type="radio" name="Sudjelovanje" /><label>Ne</label>
+
+
+
+	<button type="submit">Add</button>
+</form>
