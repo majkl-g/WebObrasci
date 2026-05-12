@@ -47,6 +47,12 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.MapGet("/logout", async context =>
+{
+    await context.SignOutAsync("Cookies");
+    await context.SignOutAsync("oidc");
+});
+
 app.MapRazorPages();
 
 app.Run();

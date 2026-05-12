@@ -6,27 +6,27 @@ using WebObrasci1.Models;
 
 namespace WebObrasci1.Pages
 {
-    public class StudentsModel : PageModel
+    public class UsersModel : PageModel
     {
         private readonly AppDbContext _context;
 
-        public List<Student> Students { get; set; } = new List<Student>();
+        public List<User> Users { get; set; } = new List<User>();
 
         [BindProperty]
-        public Student NewStudent { get; set; }
+        public User NewUser { get; set; }
 
-        public StudentsModel(AppDbContext context)
+        public UsersModel(AppDbContext context)
         {
             _context = context; ;
         }
         public void OnGet()
         {
-            Students = _context.Students.ToList();
+            Users = _context.Users.ToList();
         }
 
         public IActionResult OnPost()
         {
-            _context.Students.Add(NewStudent);
+            _context.Users.Add(NewUser);
 
             _context.SaveChanges();
 
