@@ -1,0 +1,12 @@
+﻿@page
+@model WebObrasci1.Pages.Index1Model
+@{
+}
+@using Microsoft.AspNetCore.Authentication
+
+@{
+    var accessToken =
+        await HttpContext.GetTokenAsync("access_token");
+}
+
+<p>@accessToken</p>

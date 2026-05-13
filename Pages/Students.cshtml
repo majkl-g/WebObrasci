@@ -1,6 +1,6 @@
 ﻿@page
 @using WebObrasci1.Models
-@model WebObrasci1.Pages.StudentsModel
+@model WebObrasci1.Pages.UsersModel
 @{
 	<h1>Students</h1>
 
@@ -24,16 +24,16 @@
 	</thead>
 
 	<tbody>
-		@foreach(Student student in Model.Students){
+		@foreach(User User in Model.Users){
 			<tr>
 				<td>
-					@student.Id
+					@User.Id
 				</td>
 				<td>
-					@student.Name
+					@User.Name
 				</td>
 				<td>
-					@student.Age
+					@User.Age
 				</td>
 			</tr>
 		}
