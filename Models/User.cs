@@ -4,10 +4,14 @@
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }    
+        public string ExternalId { get; set; } = default!;
 
-        public int Age { get; set; }
+        public string UserName { get; set; } = default!;
 
-       // public ICollection<UserRole> UserRoles { get; set; }
+        public string Email { get; set; } = default!;
+
+        public int? Age { get; set; }
+
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     }
 }
