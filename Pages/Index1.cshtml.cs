@@ -7,6 +7,7 @@ namespace WebObrasci1.Pages
     {
         public void OnGet()
         {
+
         }
     }
 }
