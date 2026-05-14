@@ -119,7 +119,19 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+//Nisam siguran koji logout nacin je bolji
+/*app.MapGet("/logout", async context =>
+{
+    await context.SignOutAsync("Cookies");
 
+    var callbackUrl = "https://localhost:7120/";
+
+    var keycloakLogoutUrl =
+        "http://localhost:5002/realms/Test/protocol/openid-connect/logout" +
+        "?redirect_uri=" + Uri.EscapeDataString(callbackUrl);
+
+    context.Response.Redirect(keycloakLogoutUrl);
+});*/
 
 
 app.MapGet("/logout", async context =>
