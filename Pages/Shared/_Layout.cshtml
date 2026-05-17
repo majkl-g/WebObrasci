@@ -28,6 +28,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Students">Students</a>
                         </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+
+                            <li class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" href="/logout">Logout</a>
+                                </li>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
