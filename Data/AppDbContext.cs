@@ -36,6 +36,8 @@ namespace WebObrasci1.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // Composite primary key for UserRole
             modelBuilder.Entity<UserRole>()
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
@@ -49,10 +51,37 @@ namespace WebObrasci1.Data
             // UserRole -> Role relationship
             modelBuilder.Entity<UserRole>()
                 .HasOne(ur => ur.Role)
-                .WithMany()
+                .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
 
-            base.OnModelCreating(modelBuilder);
+            // Unique ExternalId
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.ExternalId)
+                .IsUnique();
+
+            // Unique Role Name
+            modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
+
+            // Seed Roles
+            modelBuilder.Entity<Role>().HasData(
+                new Role
+                {
+                    Id = 1,
+                    Name = "Student"
+                },
+                new Role
+                {
+                    Id = 2,
+                    Name = "Admin"
+                },
+                new Role
+                {
+                    Id = 3,
+                    Name = "Professor"
+                }
+            );
         }
 
         public DbSet<User> Users { get; set; }
