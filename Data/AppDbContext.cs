@@ -8,15 +8,6 @@ namespace WebObrasci1.Data
     {
         private readonly IConfiguration? _configuration;
 
-        public AppDbContext()
-        {
-        }
-
-        public AppDbContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (_configuration != null)
@@ -89,5 +80,11 @@ namespace WebObrasci1.Data
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<UserRole> UserRoles { get; set; }
+
+        public DbSet<DynamicForm> DynamicForms { get; set; }
+
+        public DbSet<DynamicFormField> DynamicFormFields { get; set; }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
     }
 }

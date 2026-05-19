@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>();
 
+
 // Add authentication and OpenIdConnect
 builder.Services.AddAuthentication(options =>
 {
