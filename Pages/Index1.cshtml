@@ -11,7 +11,7 @@
 
 <p>@accessToken</p>
 
-@if (User.IsInRole("Student"))
+@* @if (User.IsInRole("Student"))
 {
     <h1>ROLE WORKS</h1>
 }
@@ -19,4 +19,11 @@
 @foreach (var claim in User.Claims)
 {
     <p>@claim.Type : @claim.Value</p>
-}
+} *@
+
+<ul>
+    @foreach (var c in User.Claims)
+    {
+        <li>@c.Type = @c.Value</li>
+    }
+</ul>

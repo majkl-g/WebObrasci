@@ -28,7 +28,10 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = "RVCPT1iPP8dMILHiKmmYiXpJ6cpBelsA";
     options.ResponseType = "code";
     options.SaveTokens = true;
+    //options.SaveTokens = false;
     options.RequireHttpsMetadata = false;
+    options.ClaimActions.MapUniqueJsonKey("sub", "sub");
+    options.TokenValidationParameters.NameClaimType = "sub";
     //options.TokenValidationParameters.RoleClaimType = "roles";
 
     options.Events = new OpenIdConnectEvents

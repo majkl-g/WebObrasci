@@ -86,5 +86,7 @@ namespace WebObrasci1.Data
         public DbSet<DynamicFormField> DynamicFormFields { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        public DbSet<DynamicFormSubmission> DynamicFormSubmissions { get; set; }
     }
 }
