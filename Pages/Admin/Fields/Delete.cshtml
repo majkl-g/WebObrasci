@@ -1,0 +1,12 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Fields.DeleteModel
+@{
+    <h1>Delete Field</h1>
+
+    <p>Are you sure you want to delete: <strong>@Model.Field.Label</strong> ?</p>
+
+    <form method="post">
+        <input type="hidden" asp-for="Field.Id" />
+        <button type="submit">Delete</button>
+    </form>
+}
