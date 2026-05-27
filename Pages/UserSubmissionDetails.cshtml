@@ -1,0 +1,42 @@
+﻿@page "{id:int}"
+@model WebObrasci1.Pages.UserSubmissionDetailsModel
+@{
+    ViewData["Title"] = "Submission Details";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Submission == null)
+{
+    <p>Submission not found.</p>
+}
+else
+{
+    <p><strong>Form:</strong> @Model.Submission.Form.Title</p>
+    <p><strong>Submitted:</strong> @Model.Submission.SubmittedAt.ToLocalTime()</p>
+
+    if (!Model.Qa.Any())
+    {
+        <pre>@Model.Submission.DataJson</pre>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Pitanje</th>
+                    <th>Odgovor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Qa)
+                {
+                    <tr>
+                        <td>@item.Question</td>
+                        <td>@item.Answer</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

@@ -71,7 +71,7 @@ namespace WebObrasci1.Pages
             _context.FormSubmissions.Add(submission);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Privacy");
+            return RedirectToPage("/FormsList");
         }
 
         private async Task<User> GetOrCreateUserAsync()
