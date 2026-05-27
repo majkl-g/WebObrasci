@@ -12,11 +12,11 @@ namespace WebObrasci1.Pages.Admin.Forms
         public EditModel(AppDbContext context) => _context = context;
 
         [BindProperty]
-        public DynamicForm Form { get; set; }
+        public Form Form { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Form = await _context.DynamicForms.FindAsync(id);
+            Form = await _context.Forms.FindAsync(id);
             if (Form == null) return NotFound();
             return Page();
         }

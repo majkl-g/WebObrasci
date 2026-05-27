@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace WebObrasci1.Data
 {
@@ -25,68 +24,59 @@ namespace WebObrasci1.Data
                 options.UseNpgsql(config.GetConnectionString("ConnectionString"));
             }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // Composite primary key for UserRole
-            modelBuilder.Entity<UserRole>()
-                .HasKey(ur => new { ur.UserId, ur.RoleId });
-
-            // UserRole -> User relationship
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.User)
-                .WithMany(u => u.UserRoles)
-                .HasForeignKey(ur => ur.UserId);
-
-            // UserRole -> Role relationship
-            modelBuilder.Entity<UserRole>()
-                .HasOne(ur => ur.Role)
-                .WithMany(r => r.UserRoles)
-                .HasForeignKey(ur => ur.RoleId);
 
             // Unique ExternalId
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.ExternalId)
                 .IsUnique();
 
-            // Unique Role Name
-            modelBuilder.Entity<Role>()
-                .HasIndex(r => r.Name)
-                .IsUnique();
+            modelBuilder.Entity<Form>()
+                .HasMany(x => x.Fields)
+                .WithOne(x => x.Form)
+                .HasForeignKey(x => x.FormId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            modelBuilder.Entity<Form>()
+                .HasMany(x => x.RequiredApprovals)
+                .WithOne()
+                .HasForeignKey(x => x.FormId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Seed Roles
-            modelBuilder.Entity<Role>().HasData(
-                new Role
-                {
-                    Id = 1,
-                    Name = "Student"
-                },
-                new Role
-                {
-                    Id = 2,
-                    Name = "Admin"
-                },
-                new Role
-                {
-                    Id = 3,
-                    Name = "Professor"
-                }
-            );
+            modelBuilder.Entity<FormSubmission>()
+                .HasOne(x => x.Form)
+                .WithMany()
+                .HasForeignKey(x => x.FormId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<FormSubmission>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<FormSubmission>()
+                .HasMany(x => x.Approvals)
+                .WithOne()
+                .HasForeignKey(x => x.FormSubmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
-
-        public DbSet<User> Users { get; set; }
-
-        public DbSet<Role> Roles { get; set; }
-
-        public DbSet<UserRole> UserRoles { get; set; }
-
-        public DbSet<DynamicForm> DynamicForms { get; set; }
-
-        public DbSet<DynamicFormField> DynamicFormFields { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<DynamicFormSubmission> DynamicFormSubmissions { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Form> Forms { get; set; }
+
+        public DbSet<FormField> FormFields { get; set; }
+
+        public DbSet<FormRequiredApprovals> FormRequiredApprovals { get; set; }
+
+        public DbSet<FormSubmission> FormSubmissions { get; set; }
+
+        public DbSet<FormSubmissionApproval> FormSubmissionApproval { get; set; }
     }
 }

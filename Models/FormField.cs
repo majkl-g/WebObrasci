@@ -1,10 +1,11 @@
-﻿namespace WebObrasci1.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebObrasci1.Models
 {
-    public class DynamicFormField
+    public class FormField : BaseEntity
     {
-        public int Id { get; set; }
-        public int DynamicFormId { get; set; }
-        public DynamicForm? DynamicForm { get; set; } 
+        public int FormId { get; set; }
+        public Form? Form { get; set; } 
 
         public string Label { get; set; } = "";
         public string Name { get; set; } = "";

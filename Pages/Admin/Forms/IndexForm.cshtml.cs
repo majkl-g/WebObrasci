@@ -13,14 +13,14 @@ namespace WebObrasci1.Pages.Admin.Forms
         public IndexFormModel(AppDbContext context) // Fixed constructor name
         {
             _context = context;
-            Forms = new List<DynamicForm>(); // Initialize Forms to avoid CS8618
+            Forms = new List<Form>(); // Initialize Forms to avoid CS8618
         }
 
-        public List<DynamicForm> Forms { get; set; }
+        public List<Form> Forms { get; set; }
 
         public async Task OnGetAsync()
         {
-            Forms = await _context.DynamicForms.ToListAsync();
+            Forms = await _context.Forms.ToListAsync();
         }
     }
 }

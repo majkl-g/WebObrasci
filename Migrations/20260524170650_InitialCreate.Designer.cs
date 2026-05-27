@@ -12,8 +12,8 @@ using WebObrasci1.Data;
 namespace WebObrasci1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260521194936_AddDynamicFormSubmissions")]
-    partial class AddDynamicFormSubmissions
+    [Migration("20260524170650_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,19 @@ namespace WebObrasci1.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WebObrasci1.Models.DynamicForm", b =>
+            modelBuilder.Entity("WebObrasci1.Models.Form", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -39,10 +45,10 @@ namespace WebObrasci1.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DynamicForms");
+                    b.ToTable("Forms");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.DynamicFormField", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormField", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,7 +56,7 @@ namespace WebObrasci1.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DynamicFormId")
+                    b.Property<int>("FormId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Label")
@@ -64,18 +70,52 @@ namespace WebObrasci1.Migrations
                     b.Property<bool>("Required")
                         .HasColumnType("boolean");
 
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DynamicFormId");
+                    b.HasIndex("FormId");
 
-                    b.ToTable("DynamicFormFields");
+                    b.ToTable("FormFields");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.DynamicFormSubmission", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormRequiredApprovals", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApprovalRole")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("FormId")
+                        .HasColumnType("integer");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormId");
+
+                    b.ToTable("FormRequiredApprovals");
+                });
+
+            modelBuilder.Entity("WebObrasci1.Models.FormSubmission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,6 +130,12 @@ namespace WebObrasci1.Migrations
                     b.Property<int>("FormId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -102,10 +148,10 @@ namespace WebObrasci1.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DynamicFormSubmissions");
+                    b.ToTable("FormSubmissions");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.Role", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormSubmissionApproval", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,33 +159,28 @@ namespace WebObrasci1.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ApprovalAsRole")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ApprovalFrom")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("FormSubmissionId")
+                        .HasColumnType("integer");
+
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
+                    b.HasIndex("FormSubmissionId");
 
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Student"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Professor"
-                        });
+                    b.ToTable("FormSubmissionApproval");
                 });
 
             modelBuilder.Entity("WebObrasci1.Models.User", b =>
@@ -161,6 +202,12 @@ namespace WebObrasci1.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<uint>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -173,44 +220,38 @@ namespace WebObrasci1.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.UserRole", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormField", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("WebObrasci1.Models.DynamicFormField", b =>
-                {
-                    b.HasOne("WebObrasci1.Models.DynamicForm", "DynamicForm")
+                    b.HasOne("WebObrasci1.Models.Form", "Form")
                         .WithMany("Fields")
-                        .HasForeignKey("DynamicFormId")
+                        .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DynamicForm");
+                    b.Navigation("Form");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.DynamicFormSubmission", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormRequiredApprovals", b =>
                 {
-                    b.HasOne("WebObrasci1.Models.DynamicForm", "Form")
-                        .WithMany()
+                    b.HasOne("WebObrasci1.Models.Form", null)
+                        .WithMany("RequiredApprovals")
                         .HasForeignKey("FormId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WebObrasci1.Models.FormSubmission", b =>
+                {
+                    b.HasOne("WebObrasci1.Models.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("WebObrasci1.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Form");
@@ -218,38 +259,25 @@ namespace WebObrasci1.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.UserRole", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormSubmissionApproval", b =>
                 {
-                    b.HasOne("WebObrasci1.Models.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
+                    b.HasOne("WebObrasci1.Models.FormSubmission", null)
+                        .WithMany("Approvals")
+                        .HasForeignKey("FormSubmissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("WebObrasci1.Models.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.DynamicForm", b =>
+            modelBuilder.Entity("WebObrasci1.Models.Form", b =>
                 {
                     b.Navigation("Fields");
+
+                    b.Navigation("RequiredApprovals");
                 });
 
-            modelBuilder.Entity("WebObrasci1.Models.Role", b =>
+            modelBuilder.Entity("WebObrasci1.Models.FormSubmission", b =>
                 {
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("WebObrasci1.Models.User", b =>
-                {
-                    b.Navigation("UserRoles");
+                    b.Navigation("Approvals");
                 });
 #pragma warning restore 612, 618
         }

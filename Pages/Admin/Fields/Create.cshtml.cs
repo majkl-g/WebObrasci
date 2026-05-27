@@ -11,11 +11,11 @@ namespace WebObrasci1.Pages.Admin.Fields
         public CreateModel(AppDbContext context) => _context = context;
 
         [BindProperty]
-        public DynamicFormField Field { get; set; } = new();
+        public FormField Field { get; set; } = new();
 
         public void OnGet(int formId)
         {
-            Field.DynamicFormId = formId;
+            Field.FormId = formId;
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -31,10 +31,10 @@ namespace WebObrasci1.Pages.Admin.Fields
            
             // if (!ModelState.IsValid) return Page();
 
-            _context.DynamicFormFields.Add(Field);
+            _context.FormFields.Add(Field);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("IndexField", new { formId = Field.DynamicFormId });
+            return RedirectToPage("IndexField", new { formId = Field.FormId });
         }
     }
 }

@@ -11,7 +11,7 @@ namespace WebObrasci1.Pages.Admin.Forms
         public CreateModel(AppDbContext context) => _context = context;
 
         [BindProperty]
-        public DynamicForm Form { get; set; }
+        public Form Form { get; set; }
 
         public void OnGet() { }
 
@@ -19,7 +19,7 @@ namespace WebObrasci1.Pages.Admin.Forms
         {
             if (!ModelState.IsValid) return Page();
 
-            _context.DynamicForms.Add(Form);
+            _context.Forms.Add(Form);
             await _context.SaveChangesAsync();
             return RedirectToPage("IndexForm");  
 

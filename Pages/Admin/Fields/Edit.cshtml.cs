@@ -11,12 +11,13 @@ namespace WebObrasci1.Pages.Admin.Fields
         public EditModel(AppDbContext context) => _context = context;
 
         [BindProperty]
-        public DynamicFormField Field { get; set; }
+        public FormField Field { get; set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Field = await _context.DynamicFormFields.FindAsync(id);
-            if (Field == null) return NotFound();
+            var field = await _context.FormFields.FindAsync(id);
+            if (field == null) return NotFound();
+            Field = field;
             return Page();
         }
 
@@ -24,10 +25,10 @@ namespace WebObrasci1.Pages.Admin.Fields
         {
             if (!ModelState.IsValid) return Page();
 
-            _context.DynamicFormFields.Update(Field);
+            _context.FormFields.Update(Field);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("Index", new { formId = Field.DynamicFormId });
+            return RedirectToPage("Index", new { formId = Field.FormId });
         }
     }
 }
