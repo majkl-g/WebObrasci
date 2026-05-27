@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages
 
 {
 
-    [Authorize(Roles = "Professor")]
+    [Authorize(Roles = Role.Profesor)]
     public class UsersModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -17,11 +18,11 @@ namespace WebObrasci1.Pages
         public List<User> Users { get; set; } = new List<User>();
 
         [BindProperty]
-        public User NewUser { get; set; }
+        public User? NewUser { get; set; }
 
         public UsersModel(AppDbContext context)
         {
-            _context = context; ;
+            _context = context;
         }
         public void OnGet()
         {

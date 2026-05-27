@@ -1,0 +1,36 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Fields.CreateModel
+    <h1>Create Field</h1>
+
+    <form method="post">
+    <validation-summary asp-validation-summary="All" class="text-danger"></validation-summary>
+        <input type="hidden" asp-for="Field.FormId" />
+
+        <div>
+            <label asp-for="Field.Label"></label>
+            <input asp-for="Field.Label" class="form-control" />
+        </div>
+
+        <div>
+            <label asp-for="Field.Name"></label>
+            <input asp-for="Field.Name" class="form-control" />
+        </div>
+
+        <div>
+            <label asp-for="Field.Type"></label>
+            <select asp-for="Field.Type" class="form-control">
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+                <option value="select">Select</option>
+            </select>
+        </div>
+
+        <div>
+            <label asp-for="Field.Required"></label>
+            <input asp-for="Field.Required" type="checkbox" />
+        </div>
+
+        <button type="submit">Save</button>
+    </form>
+

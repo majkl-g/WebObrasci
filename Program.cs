@@ -6,12 +6,18 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
 using WebObrasci1.Models;
 using WebObrasci1.Services;
+using WebObrasci1.Settings;
 
 var builder = WebApplication.CreateBuilder(args); 
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>();
+
+var authSettings = builder.Configuration.GetSection("AuthSettings");
+var authUrl = authSettings.GetValue<string>("AuthUrl");
+var clientId = authSettings.GetValue<string>("ClientId");
+var clientSecret = authSettings.GetValue<string>("ClientSecret");
 
 // Add authentication and OpenIdConnect
 builder.Services.AddAuthentication(options =>
@@ -22,87 +28,33 @@ builder.Services.AddAuthentication(options =>
 .AddCookie()
 .AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = "http://localhost:5002/realms/Test";
-    options.ClientId = "WebObrasci1";
-    options.ClientSecret = "RVCPT1iPP8dMILHiKmmYiXpJ6cpBelsA";
+    options.Authority = authUrl;
+    options.ClientId = clientId;
+    options.ClientSecret = clientSecret;
     options.ResponseType = "code";
     options.SaveTokens = true;
+    //options.SaveTokens = false;
     options.RequireHttpsMetadata = false;
+    options.ClaimActions.MapUniqueJsonKey("sub", "sub");
+    options.TokenValidationParameters.NameClaimType = "sub";
     //options.TokenValidationParameters.RoleClaimType = "roles";
-
-    options.Events = new OpenIdConnectEvents
-    {
-        OnTokenValidated = async context =>
-        {
-            var db = context.HttpContext.RequestServices
-                .GetRequiredService<AppDbContext>();
-
-            var principal = context.Principal;
-
-            if (principal == null)
-                return;
-
-            // Keycloak unique user ID
-            var externalId = principal
-                .FindFirst("sub")?.Value;
-
-            if (string.IsNullOrWhiteSpace(externalId))
-                return;
-
-            // Keycloak username
-            var username = principal
-                .FindFirst("preferred_username")?.Value;
-
-            // Keycloak email
-            var email = principal
-                .FindFirst("email")?.Value;
-
-            // Check if user already exists
-            var user = await db.Users
-                .Include(x => x.UserRoles)
-                .FirstOrDefaultAsync(x => x.ExternalId == externalId);
-
-            // CREATE USER ON FIRST LOGIN
-            if (user == null)
-            {
-                user = new User
-                {
-                    ExternalId = externalId,
-                    UserName = username ?? "",
-                    Email = email ?? ""
-                };
-
-                db.Users.Add(user);
-
-                // Assign default role
-                var studentRole = await db.Roles
-                    .FirstOrDefaultAsync(x => x.Name == "Student");
-
-                if (studentRole != null)
-                {
-                    user.UserRoles.Add(new UserRole
-                    {
-                        RoleId = studentRole.Id
-                    });
-                }
-            }
-            else
-            {
-                // Update user info on login
-                user.UserName = username ?? user.UserName;
-                user.Email = email ?? user.Email;
-            }
-
-            await db.SaveChangesAsync();
-        }
-    };
 });
-builder.Services.AddScoped<IClaimsTransformation,
-    DbRoleClaimsTransformer>();
+
+builder.Services.AddOptions<UserSettings>()
+    .Bind(builder.Configuration.GetSection("UserSettings"));
+
+builder.Services.AddScoped<IClaimsTransformation, RoleClaimsTransformer>();
+builder.Services.AddScoped<IUserHelper, UserHelper>();
 
 
 
 var app = builder.Build();
+
+using (var s = app.Services.CreateScope())
+using (var ctx = s.ServiceProvider.GetRequiredService<AppDbContext>())
+{
+    ctx.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -138,6 +90,11 @@ app.MapGet("/logout", async context =>
 {
     await context.SignOutAsync("Cookies");
     await context.SignOutAsync("oidc");
+});
+app.MapGet("/login", async context =>
+{
+    var ap = new AuthenticationProperties { RedirectUri = "https://localhost:7120/" };
+    await context.ChallengeAsync(ap);
 });
 
 app.MapRazorPages();

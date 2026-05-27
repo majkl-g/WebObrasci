@@ -1,0 +1,22 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Fields.IndexFieldModel
+@{
+    <h1>Fields</h1>
+    <a asp-page="Create" asp-route-formId="@Model.FormId">Add Field</a>
+
+    <table class="table">
+        <tr><th>Label</th><th>Type</th><th>Required</th><th></th></tr>
+        @foreach (var f in Model.Fields)
+        {
+            <tr>
+                <td>@f.Label</td>
+                <td>@f.Type</td>
+                <td>@f.Required</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@f.Id">Edit</a> |
+                    <a asp-page="Delete" asp-route-id="@f.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
