@@ -1,0 +1,25 @@
+﻿@page
+@model WebObrasci1.Pages.FormsListModel
+@{
+    ViewData["Title"] = "Available Forms";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Forms.Count == 0)
+{
+    <p>No forms available.</p>
+}
+else
+{
+    <ul>
+        @foreach (var form in Model.Forms)
+        {
+            <li>
+                <a asp-page="/FormFill" asp-route-id="@form.Id">
+                    @form.Title
+                </a>
+            </li>
+        }
+    </ul>
+}

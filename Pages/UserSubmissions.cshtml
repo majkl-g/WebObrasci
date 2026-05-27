@@ -1,0 +1,59 @@
+﻿@page
+@model WebObrasci1.Pages.UserSubmissionsModel
+@{
+    ViewData["Title"] = "My Submissions";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!Model.Submissions.Any())
+{
+    <p>No submissions found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Submitted</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.Submissions)
+            {
+                var qa = Model.ParseSimpleJson(s.DataJson);
+
+                <tr>
+                    <td>@s.SubmittedAt.ToLocalTime()</td>
+                    <td>
+                        @if (!qa.Any())
+                        {
+                            <pre>@s.DataJson</pre>
+                        }
+                        else
+                        {
+                            <table class="table table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Answer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in qa)
+                                    {
+                                        <tr>
+                                            <td>@item.Question</td>
+                                            <td>@item.Answer</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

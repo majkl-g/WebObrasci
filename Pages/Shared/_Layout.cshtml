@@ -25,13 +25,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Lista obrazaca</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/FormsList">Lista obrazaca</a>
                         </li>
+                        
                         @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Students">Students</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/UserSubmissions">Ispunjeni Obrasci</a>
+                            </li>
+                            
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Admin/Forms/IndexForm">Obrasci</a>
