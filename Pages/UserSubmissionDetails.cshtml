@@ -1,19 +1,19 @@
 ﻿@page "{id:int}"
 @model WebObrasci1.Pages.UserSubmissionDetailsModel
 @{
-    ViewData["Title"] = "Submission Details";
+    ViewData["Title"] = "Detalji predaje";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 @if (Model.Submission == null)
 {
-    <p>Submission not found.</p>
+    <p>Obrazac nije nađen!</p>
 }
 else
 {
-    <p><strong>Form:</strong> @Model.Submission.Form.Title</p>
-    <p><strong>Submitted:</strong> @Model.Submission.SubmittedAt.ToLocalTime()</p>
+    <p><strong>Obrazac:</strong> @Model.Submission.Form.Title</p>
+    <p><strong>Predan:</strong> @Model.Submission.SubmittedAt.ToLocalTime()</p>
 
     if (!Model.Qa.Any())
     {
