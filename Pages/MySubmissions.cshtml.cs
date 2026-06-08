@@ -31,6 +31,7 @@ namespace WebObrasci1.Pages
 
             Submissions = await _context.FormSubmissions
                 .Include(s => s.Form)
+                .Include(s => s.Approvals)
                 .Where(s => s.UserId == user.Id)
                 .OrderByDescending(s => s.SubmittedAt)
                 .ToListAsync();
