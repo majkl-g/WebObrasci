@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages
 {
-    [Authorize]
+    [Authorize(Roles = Role.Student)]
     public class MySubmissionsModel : PageModel
     {
         private readonly AppDbContext _context;

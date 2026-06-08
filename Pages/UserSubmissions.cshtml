@@ -30,7 +30,7 @@ else
             @foreach (var s in Model.Submissions)
             {
                 var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == "Professor");
-                var isDenied = s.Approvals.Any(a => a.ApprovalAsRole == "Odbijeno");
+                var isDenied = s.Approvals.Any(a => a.ApprovalAsRole == "Denied");
                 var status = isApproved ? "Prihvaćeno" : (isDenied ? "Odbijeno" : "U obradi");
 
                 <tr>
@@ -38,8 +38,8 @@ else
                     <td>@s.SubmittedAt.ToLocalTime()</td>
                     <td>@status</td>
                     <td>
-                        <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id">Pregled</a>
-
+                        @* <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id">Pregled</a> *@
+                        <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Pregled</a>
                         @if (!isApproved && !isDenied)
                         {
                             <form method="post" style="display:inline;">
@@ -48,6 +48,7 @@ else
                                 <button type="submit" asp-page-handler="Deny" class="btn btn-sm btn-danger">Odbij</button>
                             </form>
                         }
+                        
                     </td>
                 </tr>
             }
