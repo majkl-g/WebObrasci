@@ -1,19 +1,18 @@
 ﻿@page
 @model WebObrasci1.Pages.Admin.Forms.IndexFormModel
 @{
-    <h1>Forms</h1>
-    <a asp-page="Create">Create New</a>
+    <h1>Obrasci</h1>
+    <a asp-page="Create">Novi obrazac</a>
 
     <table class="table">
-        <tr><th>Title</th><th>Actions</th></tr>
+        <tr><th>Naslov</th><th>Radnja</th></tr>
         @foreach (var f in Model.Forms)
         {
             <tr>
                 <td>@f.Title</td>
                 <td>
-                    <a asp-page="Edit" asp-route-id="@f.Id">Edit</a> |
-                    <a asp-page="Delete" asp-route-id="@f.Id">Delete</a> |
-                    <a asp-page="/Admin/Fields/IndexField" asp-route-formId="@f.Id">Fields</a>
+                    <a asp-page="/Admin/Fields/IndexField" asp-route-formId="@f.Id">Izmjeni</a> |
+                    <a asp-page="Delete" asp-route-id="@f.Id">Izbriši</a> 
                 </td>
             </tr>
         }

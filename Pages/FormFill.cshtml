@@ -11,15 +11,15 @@
         <div class="mb-3">
             <label>@field.Label</label>
 
-            @if (field.Type == "text")
+            @if (field.Type == Models.FormFieldType.Text)
             {
                 <input name="Answers[@field.Name]" class="form-control" />
             }
-            else if (field.Type == "number")
+            else if (field.Type == Models.FormFieldType.Number)
             {
                 <input type="number" name="Answers[@field.Name]" class="form-control" />
             }
-            else if (field.Type == "date")
+            else if (field.Type == Models.FormFieldType.Date)
             {
                 <input type="date" name="Answers[@field.Name]" class="form-control" />
             }

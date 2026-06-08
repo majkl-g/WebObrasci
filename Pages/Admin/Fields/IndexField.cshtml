@@ -1,11 +1,22 @@
 ﻿@page
 @model WebObrasci1.Pages.Admin.Fields.IndexFieldModel
 @{
-    <h1>Fields</h1>
-    <a asp-page="Create" asp-route-formId="@Model.FormId">Add Field</a>
+    <h1>Promjena naslova obrasca</h1>
+
+    <form method="post">
+        <input type="hidden" asp-for="Form.Id" />
+        <label>Title</label>
+        <input asp-for="Form.Title" />
+        <button type="submit">Spremi</button>
+    </form>
+
+    <hr />
+
+    <h1>Polja</h1>
+    <a asp-page="Create" asp-route-formId="@Model.FormId">Dodaj Polje</a>
 
     <table class="table">
-        <tr><th>Label</th><th>Type</th><th>Required</th><th></th></tr>
+        <tr><th>Naziv polja</th><th>Tip</th><th>Obavezno</th><th></th></tr>
         @foreach (var f in Model.Fields)
         {
             <tr>
@@ -13,8 +24,8 @@
                 <td>@f.Type</td>
                 <td>@f.Required</td>
                 <td>
-                    <a asp-page="Edit" asp-route-id="@f.Id">Edit</a> |
-                    <a asp-page="Delete" asp-route-id="@f.Id">Delete</a>
+                    <a asp-page="Edit" asp-route-id="@f.Id">Izmjeni</a> |
+                    <a asp-page="Delete" asp-route-id="@f.Id">Izbriši</a>
                 </td>
             </tr>
         }

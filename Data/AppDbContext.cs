@@ -6,15 +6,26 @@ namespace WebObrasci1.Data
     public class AppDbContext : DbContext
     {
         private readonly IConfiguration? _configuration;
+        private readonly ILogger<AppDbContext> _logger;
+
+        public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration? configuration, ILogger<AppDbContext> logger)
+            : base(options)
+        {
+            _configuration = configuration;
+            _logger = logger;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (_configuration != null)
             {
+                _logger.LogInformation("Using Npgsql");
                 options.UseNpgsql(_configuration.GetConnectionString("ConnectionString"));
             }
             else
             {
+                _logger.LogInformation("EF Core designtime: using Npgsql");
+
                 // Fallback for design-time tools
                 var config = new ConfigurationBuilder()
                     .SetBasePath(AppContext.BaseDirectory)
@@ -64,8 +75,6 @@ namespace WebObrasci1.Data
                 .HasForeignKey(x => x.FormSubmissionId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
 

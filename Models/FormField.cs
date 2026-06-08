@@ -9,7 +9,11 @@ namespace WebObrasci1.Models
 
         public string Label { get; set; } = "";
         public string Name { get; set; } = "";
-        public string Type { get; set; } = "";// text, number, select, etc.
+        public FormFieldType Type { get; set; } = FormFieldType.Text;
         public bool Required { get; set; }
+
+        public int? MinValue { get; set; }
+        public int? MaxValue { get; set; }
+        public StringType? StringType { get; set; }
     }
 }

@@ -1,0 +1,6 @@
+﻿services:
+  webobrasci:
+    image: web_obrasci
+    build: 
+      context: ..
+      dockerfile: Docker/dockerfile

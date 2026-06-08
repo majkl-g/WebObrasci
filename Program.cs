@@ -8,7 +8,9 @@ using WebObrasci1.Models;
 using WebObrasci1.Services;
 using WebObrasci1.Settings;
 
-var builder = WebApplication.CreateBuilder(args); 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddEnvironmentVariables("WebObrasci_");
 
 // Add services to the container.
 builder.Services.AddRazorPages();

@@ -71,20 +71,15 @@ namespace WebObrasci1.Pages
             _context.FormSubmissions.Add(submission);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Privacy");
+            return RedirectToPage("/FormsList");
         }
 
         private async Task<User> GetOrCreateUserAsync()
         {
+            //get data from OIDC user
             var externalId = _userHelper.GetUserId(User);
-
-            // Keycloak username
-            var username = User
-                .FindFirst("preferred_username")?.Value;
-
-            // Keycloak email
-            var email = User
-                .FindFirst("email")?.Value;
+            var username = _userHelper.GetUserName(User);
+            var email = _userHelper.GetEmail(User);
 
             // Check if user already exists
             var user = await _context.Users
