@@ -35,6 +35,12 @@
                             </li>
                             
                         }
+                        @if (User.IsInRole(Role.Student))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/MySubmissions">Moji Obrasci</a>
+                            </li>
+                        }
                         
                         @if (User.Identity?.IsAuthenticated == true)
                         {
