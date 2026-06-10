@@ -28,6 +28,7 @@ namespace WebObrasci1.Pages
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            ViewData["ShowBanner"] = false;
             var form = await _context.Forms
                 .Include(f => f.Fields)
                 .FirstOrDefaultAsync(f => f.Id == id);
