@@ -16,6 +16,8 @@ namespace WebObrasci1.Pages.Admin.Fields
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            ViewData["ShowBanner"] = false;
+
             Field = await _context.FormFields.FindAsync(id);
             if (Field == null) return NotFound();
             return Page();

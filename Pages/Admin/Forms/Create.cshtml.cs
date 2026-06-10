@@ -13,10 +13,13 @@ namespace WebObrasci1.Pages.Admin.Forms
         [BindProperty]
         public Form Form { get; set; }
 
-        public void OnGet() { }
+        public void OnGet() 
+        {
+            ViewData["ShowBanner"] = false;
+        }
 
         public async Task<IActionResult> OnPostAsync()
-        {
+        {          
             if (!ModelState.IsValid) return Page();
 
             _context.Forms.Add(Form);

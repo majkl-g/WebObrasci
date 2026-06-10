@@ -21,6 +21,7 @@ namespace WebObrasci1.Pages
 
         public async Task OnGetAsync()
         {
+            ViewData["ShowBanner"] = false;
             // Show ALL submissions
             Submissions = await _context.FormSubmissions
                 .Include(s => s.Form)

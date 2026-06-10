@@ -15,6 +15,7 @@ namespace WebObrasci1.Pages.Admin.Fields
 
         public void OnGet(int formId)
         {
+            ViewData["ShowBanner"] = false;
             Field.FormId = formId;
         }
 

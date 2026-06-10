@@ -16,6 +16,8 @@ namespace WebObrasci1.Pages.Admin.Forms
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            ViewData["ShowBanner"] = false;
+
             Form = await _context.Forms.FindAsync(id);
             if (Form == null) return NotFound();
             return Page();

@@ -18,6 +18,7 @@ namespace WebObrasci1.Pages
 
         public async Task OnGetAsync()
         {
+            ViewData["ShowBanner"] = false;
             var externalId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                            ?? User.FindFirst("sub")?.Value;
 

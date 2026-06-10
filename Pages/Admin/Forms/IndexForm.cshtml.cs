@@ -20,6 +20,7 @@ namespace WebObrasci1.Pages.Admin.Forms
 
         public async Task OnGetAsync()
         {
+            ViewData["ShowBanner"] = false;
             Forms = await _context.Forms.ToListAsync();
         }
     }

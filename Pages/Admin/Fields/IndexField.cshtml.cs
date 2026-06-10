@@ -20,6 +20,7 @@ namespace WebObrasci1.Pages.Admin.Fields
 
         public async Task<IActionResult> OnGetAsync(int formId)
         {
+            ViewData["ShowBanner"] = false;
             FormId = formId;
 
             Form = await _context.Forms.FindAsync(formId);

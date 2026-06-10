@@ -17,8 +17,12 @@ namespace WebObrasci1.Pages
         public FormSubmission? Submission { get; set; }
         public List<(string Question, string Answer)> Qa { get; set; } = new();
 
+        
+
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            ViewData["ShowBanner"] = false;
+
             Submission = await _context.FormSubmissions
                 .Include(s => s.Form)
                 .Include(s => s.User)
@@ -34,6 +38,7 @@ namespace WebObrasci1.Pages
 
         private List<(string Question, string Answer)> ParseSimpleJson(string json)
         {
+            
             if (string.IsNullOrWhiteSpace(json))
                 return new();
 
