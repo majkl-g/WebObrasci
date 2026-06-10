@@ -1,0 +1,43 @@
+﻿@page
+@model WebObrasci1.Pages.MySubmissionsModel
+@{
+    ViewData["Title"] = "Predani Obrasci";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!Model.Submissions.Any())
+{
+    <p>No submissions found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Obrazac</th>
+                <th>Predan</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.Submissions)
+            {
+                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == "Professor");
+                var isDenied = s.Approvals.Any(a => a.ApprovalAsRole == "Odbijeno");
+                var status = isApproved ? "Prihvaćeno" : (isDenied ? "Odbijeno" : "U obradi");
+                var statusClass = isApproved ? "badge bg-success" : (isDenied ? "badge bg-danger" : "badge bg-warning");
+
+                <tr>
+                    <td>@s.Form.Title</td>
+                    <td>@s.SubmittedAt.ToLocalTime()</td>
+                    <td><span class="@statusClass">@status</span></td>
+                    <td>
+                        <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id">Pregled</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
