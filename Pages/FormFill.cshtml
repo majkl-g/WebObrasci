@@ -1,34 +1,59 @@
 ﻿@page "{id:int}"
 @model WebObrasci1.Pages.FormFillModel
 
-<h1>@Model.Form.Title</h1>
-
-<form method="post">
-    <validation-summary asp-validation-summary="All" class="text-danger"></validation-summary>
-
-    @foreach (var field in Model.Form.Fields)
-    {
-        <div class="mb-3">
-            <label>@field.Label</label>
-
-            @if (field.Type == Models.FormFieldType.Text)
-            {
-                <input name="Answers[@field.Name]" class="form-control" />
-            }
-            else if (field.Type == Models.FormFieldType.Number)
-            {
-                <input type="number" name="Answers[@field.Name]" class="form-control" />
-            }
-            else if (field.Type == Models.FormFieldType.Date)
-            {
-                <input type="date" name="Answers[@field.Name]" class="form-control" />
-            }
-            else
-            {
-                <input name="Answers[@field.Name]" class="form-control" />
-            }
+<div class="form-header">
+    <div class="form-header-content">
+        <!-- Logo Space -->
+        <div class="logo-space">
+            <img src="~/images/ritehlogo.jpg" alt="University Logo" class="logo-image" />
         </div>
-    }
 
-    <button type="submit">Priloži</button>
-</form>
+        <!-- Header Info (Top Right) -->
+        <div class="header-info">
+            <div class="form-number">Obrazac @Model.Form.Title</div>
+            <h1 class="form-title">@Model.Form.Title</h1>
+            <p class="form-subtitle">
+                Sveučilište u Rijeci – Tehnički fakultet<br>
+                Vukovarska 58 • 51000 Rijeka • Hrvatska
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="form-container">
+    <form method="post" class="pdf-form">
+
+        @foreach (var field in Model.Form.Fields)
+        {
+            <div class="form-field">
+                <label class="field-label">@field.Label</label>
+
+                @if (field.Type == Models.FormFieldType.Text)
+                {
+                    <input name="Answers[@field.Name]" class="field-input" placeholder="" />
+                }
+                else if (field.Type == Models.FormFieldType.Number)
+                {
+                    <input type="number" name="Answers[@field.Name]" class="field-input" placeholder="" />
+                }
+                else if (field.Type == Models.FormFieldType.Date)
+                {
+                    <input type="date" name="Answers[@field.Name]" class="field-input" />
+                }
+                else
+                {
+                    <textarea name="Answers[@field.Name]" class="field-textarea" rows="3"></textarea>
+                }
+
+                @if (field.Required)
+                {
+                    <span class="required-indicator">*</span>
+                }
+            </div>
+        }
+
+        <div class="form-footer">
+            <button type="submit" class="btn-submit">Pošalji obrazac</button>
+        </div>
+    </form>
+</div>
