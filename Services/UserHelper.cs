@@ -49,6 +49,14 @@ namespace WebObrasci1.Services
             var username = GetUserName(User);
             var email = GetEmail(User);
 
+            string role = "";
+            if (User.IsInRole(Role.Admin))
+                role = Role.Admin;
+            else if (User.IsInRole(Role.Profesor))
+                role = Role.Profesor;
+            else if (User.IsInRole(Role.Student))
+                role = Role.Student;
+
             // Check if user already exists
             var user = await _context.Users
                 .FirstOrDefaultAsync(x => x.ExternalId == externalId);
@@ -59,7 +67,9 @@ namespace WebObrasci1.Services
                 {
                     ExternalId = externalId,
                     UserName = username ?? "",
-                    Email = email ?? ""
+                    Email = email ?? "",
+                    Role = role,
+                    Title = null,
                 };
 
                 _context.Users.Add(user);
