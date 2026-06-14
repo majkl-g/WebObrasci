@@ -74,6 +74,12 @@ namespace WebObrasci1.Data
                 .WithOne()
                 .HasForeignKey(x => x.FormSubmissionId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FormSubmissionApproval>()
+                .HasOne(x => x.ApprovalUser)
+                .WithMany()
+                .HasForeignKey(x => x.ApprovalUserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         public DbSet<User> Users { get; set; }

@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using WebObrasci1.Data;
+using WebObrasci1.Models;
 using WebObrasci1.Settings;
 
 namespace WebObrasci1.Services
@@ -7,10 +10,12 @@ namespace WebObrasci1.Services
     public class UserHelper : IUserHelper
     {
         private IOptions<UserSettings> _userSettings;
+        private AppDbContext _context;
 
-        public UserHelper(IOptions<UserSettings> userSettings)
+        public UserHelper(IOptions<UserSettings> userSettings, AppDbContext context)
         {
             _userSettings = userSettings;
+            _context = context;
         }
 
         public string GetUserId(ClaimsPrincipal principal)
@@ -35,6 +40,39 @@ namespace WebObrasci1.Services
             if (email?.Value == null)
                 throw new UnauthorizedAccessException($"User '{principal.Identity?.Name}' does not have an Email claim '{_userSettings.Value.EmailClaim}'");
             return email.Value;
+        }
+
+        public async Task<User> GetOrCreateUserAsync(ClaimsPrincipal User)
+        {
+            //get data from OIDC user
+            var externalId = GetUserId(User);
+            var username = GetUserName(User);
+            var email = GetEmail(User);
+
+            // Check if user already exists
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.ExternalId == externalId);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    ExternalId = externalId,
+                    UserName = username ?? "",
+                    Email = email ?? ""
+                };
+
+                _context.Users.Add(user);
+            }
+            else
+            {
+                // Update user info on login
+                user.UserName = username ?? user.UserName;
+                user.Email = email ?? user.Email;
+            }
+
+            await _context.SaveChangesAsync();
+            return user;
         }
     }
 }

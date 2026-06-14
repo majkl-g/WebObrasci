@@ -16,8 +16,13 @@ namespace WebObrasci1.Pages
     {
         private const int _submissionPageSize = 5;
         private readonly AppDbContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public UserSubmissionsModel(AppDbContext context) => _context = context;
+        public UserSubmissionsModel(AppDbContext context, IUserHelper userHelper)
+        {
+            _context = context;
+            _userHelper = userHelper;
+        }
 
         public FormSubmissionsPage SubmissionsPage { get; set; } = new([], 1, 1, 0);
 
@@ -58,10 +63,12 @@ namespace WebObrasci1.Pages
                 return RedirectToPage();
             }
 
+            var user = await _userHelper.GetOrCreateUserAsync(User);
+
             var approval = new FormSubmissionApproval
             {
                 FormSubmissionId = submission.Id,
-                ApprovalFrom = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown",
+                ApprovalUser = user,
                 ApprovalAsRole = Role.Profesor,
                 ApprovedAt = DateTime.UtcNow
             };
@@ -81,10 +88,12 @@ namespace WebObrasci1.Pages
             if (submission == null)
                 return NotFound();
 
+            var user = await _userHelper.GetOrCreateUserAsync(User);
+
             var denial = new FormSubmissionApproval
             {
                 FormSubmissionId = submission.Id,
-                ApprovalFrom = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "Unknown",
+                ApprovalUser = user,
                 ApprovalAsRole = Role.Profesor,
                 ApprovedAt = DateTime.UtcNow,
                 Denied = true,

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebObrasci1.Data;
@@ -11,9 +12,11 @@ using WebObrasci1.Data;
 namespace WebObrasci1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260614164008_UsersRoleTitle")]
+    partial class UsersRoleTitle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,8 +174,9 @@ namespace WebObrasci1.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("ApprovalUserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ApprovalFrom")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ApprovedAt")
                         .HasColumnType("timestamp with time zone");
@@ -190,8 +194,6 @@ namespace WebObrasci1.Migrations
                         .HasColumnName("xmin");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApprovalUserId");
 
                     b.HasIndex("FormSubmissionId");
 
@@ -280,19 +282,11 @@ namespace WebObrasci1.Migrations
 
             modelBuilder.Entity("WebObrasci1.Models.FormSubmissionApproval", b =>
                 {
-                    b.HasOne("WebObrasci1.Models.User", "ApprovalUser")
-                        .WithMany()
-                        .HasForeignKey("ApprovalUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("WebObrasci1.Models.FormSubmission", null)
                         .WithMany("Approvals")
                         .HasForeignKey("FormSubmissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ApprovalUser");
                 });
 
             modelBuilder.Entity("WebObrasci1.Models.Form", b =>

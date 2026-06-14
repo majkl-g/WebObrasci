@@ -59,7 +59,7 @@ namespace WebObrasci1.Pages
 
             if (!ModelState.IsValid) return Page();
 
-            var user = await GetOrCreateUserAsync();
+            var user = await _userHelper.GetOrCreateUserAsync(User);
 
             var submission = new FormSubmission
             {
@@ -75,37 +75,5 @@ namespace WebObrasci1.Pages
             return RedirectToPage("/FormsList");
         }
 
-        private async Task<User> GetOrCreateUserAsync()
-        {
-            //get data from OIDC user
-            var externalId = _userHelper.GetUserId(User);
-            var username = _userHelper.GetUserName(User);
-            var email = _userHelper.GetEmail(User);
-
-            // Check if user already exists
-            var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.ExternalId == externalId);
-
-            if (user == null)
-            {
-                user = new User
-                {
-                    ExternalId = externalId,
-                    UserName = username ?? "",
-                    Email = email ?? ""
-                };
-
-                _context.Users.Add(user);
-            }
-            else
-            {
-                // Update user info on login
-                user.UserName = username ?? user.UserName;
-                user.Email = email ?? user.Email;
-            }
-
-            await _context.SaveChangesAsync();
-            return user;
-        }
     }
 }
