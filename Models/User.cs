@@ -9,7 +9,5 @@ namespace WebObrasci1.Models
         public string UserName { get; set; } = default!;
 
         public string Email { get; set; } = default!;
-
-        public int? Age { get; set; }
     }
 }

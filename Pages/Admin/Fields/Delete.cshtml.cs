@@ -12,14 +12,15 @@ namespace WebObrasci1.Pages.Admin.Fields
         public DeleteModel(AppDbContext context) => _context = context;
 
         [BindProperty]
-        public FormField Field { get; set; }
+        public FormField Field { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
             ViewData["ShowBanner"] = false;
 
-            Field = await _context.FormFields.FindAsync(id);
-            if (Field == null) return NotFound();
+            var field = await _context.FormFields.FindAsync(id);
+            if (field == null) return NotFound();
+            Field = field;
             return Page();
         }
 

@@ -1,4 +1,5 @@
 ﻿@page
+@using WebObrasci1.Services;
 @model WebObrasci1.Pages.UserSubmissionsModel
 @{
     ViewData["Title"] = "Predani obrasci";
@@ -29,8 +30,8 @@ else
         <tbody>
             @foreach (var s in Model.SubmissionsPage.PageData)
             {
-                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == "Professor");
-                var isDenied = s.Approvals.Any(a => a.ApprovalAsRole == "Denied");
+                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == Role.Profesor);
+                var isDenied = s.Approvals.Any(a => a.Denied);
                 var status = isApproved ? "Prihvaćeno" : (isDenied ? "Odbijeno" : "U obradi");
 
                 <tr>

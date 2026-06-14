@@ -31,9 +31,11 @@ namespace WebObrasci1.Pages
 
         public IActionResult OnPost()
         {
-            _context.Users.Add(NewUser);
-
-            _context.SaveChanges();
+            if (NewUser != null)
+            {
+                _context.Users.Add(NewUser);
+                _context.SaveChanges();
+            }
 
             return RedirectToPage();
         }

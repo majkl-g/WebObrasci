@@ -11,7 +11,7 @@ namespace WebObrasci1.Pages.Admin.Forms
         public CreateModel(AppDbContext context) => _context = context;
 
         [BindProperty]
-        public Form Form { get; set; }
+        public Form Form { get; set; } = new();
 
         public void OnGet() 
         {

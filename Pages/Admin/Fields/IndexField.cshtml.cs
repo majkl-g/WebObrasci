@@ -14,7 +14,7 @@ namespace WebObrasci1.Pages.Admin.Fields
         public List<FormField> Fields { get; set; } = new();
 
         [BindProperty]
-        public Form Form { get; set; } = null!;
+        public Form Form { get; set; } = new();
 
         public int FormId { get; set; }
 
@@ -23,9 +23,10 @@ namespace WebObrasci1.Pages.Admin.Fields
             ViewData["ShowBanner"] = false;
             FormId = formId;
 
-            Form = await _context.Forms.FindAsync(formId);
-            if (Form == null) return NotFound();
+            var form = await _context.Forms.FindAsync(formId);
+            if (form == null) return NotFound();
 
+            Form = form;
             Fields = await _context.FormFields
                 .Where(x => x.FormId == formId)
                 .ToListAsync();
