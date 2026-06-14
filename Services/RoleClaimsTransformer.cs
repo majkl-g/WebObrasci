@@ -31,23 +31,26 @@ namespace WebObrasci1.Services
 
         private bool HasJsonClaimValue(ClaimsIdentity identity, string claimName, string targetValue)
         {
-            var claim = identity.Claims.FirstOrDefault(c => c.Type == claimName);
-            if (string.IsNullOrEmpty(claim?.Value) == false)
+            var claims = identity.Claims.Where(c => c.Type == claimName);
+            foreach (var claim in claims)
             {
-                try
+                if (string.IsNullOrEmpty(claim?.Value) == false)
                 {
-                    var values = JsonSerializer.Deserialize<string[]>(claim.Value);
-                    if (values != null && values.Contains(targetValue))
+                    try
+                    {
+                        var values = JsonSerializer.Deserialize<string[]>(claim.Value);
+                        if (values != null && values.Contains(targetValue))
+                            return true;
+                    }
+                    catch (JsonException)
+                    {
+                        //skip this claim
+                    }
+
+                    //fallback if not json array:
+                    if (claim.Value.Equals(targetValue))
                         return true;
                 }
-                catch (JsonException) 
-                {
-                    //skip this claim
-                }
-
-                //fallback if not json array:
-                if (claim.Value.Equals(targetValue))
-                    return true;
             }
             return false;
         }
