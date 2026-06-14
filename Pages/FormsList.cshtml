@@ -6,14 +6,14 @@
 
 <h1>@ViewData["Title"]</h1>
 
-@if (Model.Forms.Count == 0)
+@if (Model.FormsPage.IsEmpty)
 {
     <p>No forms available.</p>
 }
 else
 {
     <ul>
-        @foreach (var form in Model.Forms)
+        @foreach (var form in Model.FormsPage.PageData)
         {
             <li>
                 <a asp-page="/FormFill" asp-route-id="@form.Id">
@@ -22,4 +22,16 @@ else
             </li>
         }
     </ul>
+
+    <div class="paging">
+        @if (Model.FormsPage.PageNumber > 1)
+        {
+            <a asp-page="/FormsList" asp-route-pageNumber="@(Model.FormsPage.PageNumber - 1)" class="btn btn-sm btn-primary">Prethodna</a>
+        }
+        <p>@Model.FormsPage.PageNumber</p>
+        @if (Model.FormsPage.PageNumber < Model.FormsPage.TotalPages)
+        {
+            <a asp-page="/FormsList" asp-route-pageNumber="@(Model.FormsPage.PageNumber + 1)" class="btn btn-sm btn-primary">Sljedeca</a>
+        }
+    </div>
 }
