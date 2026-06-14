@@ -11,7 +11,7 @@
     <div class="alert alert-info">@TempData["Message"]</div>
 }
 
-@if (!Model.Submissions.Any())
+@if (Model.SubmissionsPage.IsEmpty)
 {
     <p>No submissions found.</p>
 }
@@ -27,7 +27,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var s in Model.Submissions)
+            @foreach (var s in Model.SubmissionsPage.PageData)
             {
                 var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == "Professor");
                 var isDenied = s.Approvals.Any(a => a.ApprovalAsRole == "Denied");
@@ -54,4 +54,16 @@ else
             }
         </tbody>
     </table>
+
+    <div class="paging">
+        @if (Model.SubmissionsPage.PageNumber > 1)
+        {
+            <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.SubmissionsPage.PageNumber - 1)" class="btn btn-sm btn-primary">Prethodna</a>
+        }
+        <p>@Model.SubmissionsPage.PageNumber</p>
+        @if (Model.SubmissionsPage.PageNumber < Model.SubmissionsPage.TotalPages)
+        {
+            <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.SubmissionsPage.PageNumber + 1)" class="btn btn-sm btn-primary">Sljedeca</a>
+        }
+    </div>
 }

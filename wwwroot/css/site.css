@@ -402,3 +402,7 @@ body {
         font-size: 1.3rem;
     }
 }
+
+.paging p {
+    display: inline;
+}

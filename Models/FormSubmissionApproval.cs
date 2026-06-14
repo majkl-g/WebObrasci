@@ -6,5 +6,6 @@
         public string ApprovalFrom { get; set; } = "";
         public string ApprovalAsRole { get; set; } = "";
         public DateTime ApprovedAt { get; set; } = DateTime.UtcNow;
+        public bool Denied { get; set; }
     }
 }
