@@ -4,9 +4,10 @@
     {
         Text = 0,
         Email = 1,
-        Number = 2,
+        Decimal = 2,
         Select = 3,
         Date = 4,
         CheckBox = 5,
+        Integer = 6,
     }
 }

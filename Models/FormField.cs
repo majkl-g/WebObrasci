@@ -15,5 +15,6 @@ namespace WebObrasci1.Models
         public int? MinValue { get; set; }
         public int? MaxValue { get; set; }
         public StringType? StringType { get; set; }
+        public ICollection<FormFieldSelectValue> SelectValues { get; set; } = [];
     }
 }

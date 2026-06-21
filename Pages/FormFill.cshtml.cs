@@ -31,6 +31,7 @@ namespace WebObrasci1.Pages
             ViewData["ShowBanner"] = false;
             var form = await _context.Forms
                 .Include(f => f.Fields)
+                .ThenInclude(x => x.SelectValues)
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null) return NotFound();

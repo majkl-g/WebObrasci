@@ -30,15 +30,36 @@
 
                 @if (field.Type == Models.FormFieldType.Text)
                 {
-                    <input name="Answers[@field.Name]" class="field-input" placeholder="" />
+                    <input name="Answers[@field.Name]" class="field-input" placeholder="" required="@(field.Required ? "true" : null)"/>
                 }
-                else if (field.Type == Models.FormFieldType.Number)
+                else if (field.Type == Models.FormFieldType.Integer)
                 {
-                    <input type="number" name="Answers[@field.Name]" class="field-input" placeholder="" />
+                    <input type="number" step="1" name="Answers[@field.Name]" class="field-input" placeholder="" 
+                            min="@(field.MinValue ?? int.MinValue)" max="@(field.MaxValue ?? int.MaxValue)"/>
+                }
+                else if (field.Type == Models.FormFieldType.Decimal)
+                {
+                    <input type="number" step="0.01" name="Answers[@field.Name]" class="field-input" placeholder=""
+                           min="@(field.MinValue ?? int.MinValue)" max="@(field.MaxValue ?? int.MaxValue)" />
                 }
                 else if (field.Type == Models.FormFieldType.Date)
                 {
                     <input type="date" name="Answers[@field.Name]" class="field-input" />
+                }
+                else if (field.Type == Models.FormFieldType.Email)
+                {
+                    <input type="email" name="Answers[@field.Name]" class="field-input" />
+                }
+                else if (field.Type == Models.FormFieldType.CheckBox)
+                {
+                    <input type="checkbox" name="Answers[@field.Name]" class="field-input" />
+                }
+                else if(field.Type == Models.FormFieldType.Select){
+                    <select name="Answers[@field.Name]">
+                        @foreach(var sel in field.SelectValues){
+                            <option value="@sel.Value">@sel.Value</option>
+                        }
+                    </select>
                 }
                 else
                 {
