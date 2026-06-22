@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
-using WebObrasci1.Dto;
 using WebObrasci1.Models;
 using WebObrasci1.Pages.Shared;
 
@@ -10,7 +7,6 @@ namespace WebObrasci1.Pages
 {
     public class FormsListModel : PagedPageModel<Form>
     {
-        private const int _formsPageSize = 5;
         private readonly AppDbContext _context;
 
         protected override bool ShowBanner { get; } = true;
@@ -26,7 +22,7 @@ namespace WebObrasci1.Pages
                 .OrderBy(x => x.Title)
                 .ThenBy(x => x.Id)
                 .Skip(skip)
-                .Take(_formsPageSize)
+                .Take(take)
                 .ToListAsync();
 
             var total = await formsQuery

@@ -1,11 +1,7 @@
-using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
-using WebObrasci1.Dto;
 using WebObrasci1.Models;
 using WebObrasci1.Pages.Shared;
 using WebObrasci1.Services;
@@ -15,7 +11,6 @@ namespace WebObrasci1.Pages
     [Authorize(Roles = Role.Profesor)]
     public class UserSubmissionsModel : PagedPageModel<FormSubmission>
     {
-        private const int _submissionPageSize = 5;
         private readonly AppDbContext _context;
         private readonly IUserHelper _userHelper;
 
@@ -34,7 +29,7 @@ namespace WebObrasci1.Pages
                 .OrderByDescending(s => s.SubmittedAt)
                 .ThenByDescending(x => x.Id)
                 .Skip(skip)
-                .Take(_submissionPageSize)
+                .Take(take)
                 .ToListAsync();
 
             var total = await _context.FormSubmissions.CountAsync();
