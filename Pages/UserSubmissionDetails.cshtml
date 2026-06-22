@@ -39,4 +39,52 @@ else
             </tbody>
         </table>
     }
+
+    @if(Model.Submission.Approvals.Any())
+    {
+        <div>
+            <p><strong>Status:</strong></p>
+            <ul>
+                @foreach (var a in Model.Submission.Approvals)
+                {
+                    <li>
+                        @if (a.Denied)
+                        {
+                            <span>@a.ApprovalUser?.UserName (@a.ApprovalAsRole) @a.ApprovedAt.ToLocalTime() (Odbijeno)</span>
+                        }
+                        else
+                        {
+                            <span>@a.ApprovalUser?.UserName (@a.ApprovalAsRole) @a.ApprovedAt.ToLocalTime() (Prihvaćeno)</span>
+                        }
+
+                        @if (@a.ApprovalUser?.ExternalId == Model.ExternalUserId)
+                        {
+                            <form method="post">
+                                <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
+                                <input type="hidden" name="approvalId" value="@a.Id" />
+                                <input type="hidden" name="action" value="delete" />
+                                <button type="submit">Poništi</button>
+                            </form>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <p><strong>Status:</strong> U obradi</p>
+
+        <form method="post">
+            <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
+            <input type="hidden" name="action" value="approve" />
+            <button type="submit">Prihvati</button>
+        </form>
+
+        <form method="post">
+            <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
+            <input type="hidden" name="action" value="deny" />
+            <button type="submit">Odbij</button>
+        </form>
+    }
 }

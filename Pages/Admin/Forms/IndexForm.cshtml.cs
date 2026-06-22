@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Forms
 {
+    [Authorize(Roles = Role.ProfesorOrAdmin)]
     public class IndexFormModel : PageModel
     {
         private readonly AppDbContext _context;

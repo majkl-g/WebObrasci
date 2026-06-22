@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Forms
 {
+    [Authorize(Roles = Role.ProfesorOrAdmin)]
     public class EditModel : FormModel
     {
         private readonly AppDbContext _context;
