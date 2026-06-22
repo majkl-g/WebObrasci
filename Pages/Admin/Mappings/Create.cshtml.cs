@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
+using WebObrasci1.Services;
 
-namespace WebObrasci1.Pages.Admin.Forms
+namespace WebObrasci1.Pages.Admin.Mappings
 {
-    public class CreateModel : FormModel
+    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    public class CreateModel : MappingModel
     {
         private readonly AppDbContext _context;
         public CreateModel(AppDbContext context) => _context = context;
@@ -19,9 +22,9 @@ namespace WebObrasci1.Pages.Admin.Forms
         {          
             if (!ModelState.IsValid) return Page();
 
-            _context.Forms.Add(Form);
+            _context.FormAutofillMappings.Add(Mapping);
             await _context.SaveChangesAsync();
-            return RedirectToPage("IndexForm");  
+            return RedirectToPage("IndexMapping");  
 
         }
     }

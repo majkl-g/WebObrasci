@@ -1,22 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    public class CreateModel : PageModel
+    public class CreateModel : FieldModel
     {
         private readonly AppDbContext _context;
         public CreateModel(AppDbContext context) => _context = context;
 
-        [BindProperty]
-        public FormField Field { get; set; } = new();
-
-        public void OnGet(int formId)
+        public async Task OnGet(int formId)
         {
             ViewData["ShowBanner"] = false;
             Field.FormId = formId;
+            AvailableMappings = await _context
+                .FormAutofillMappings
+                .Where(x => x.Active)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Id)
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()

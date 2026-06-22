@@ -80,6 +80,13 @@ s/bootstrap.min.css" />
                             </li>
 
                         }
+                        @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Admin/Mappings/IndexMapping">Mapiranja</a>
+                            </li>
+
+                        }
                         @if (User.IsInRole(Role.Student))
                         {
                             <li class="nav-item">

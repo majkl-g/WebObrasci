@@ -86,6 +86,12 @@ namespace WebObrasci1.Data
                 .WithOne()
                 .HasForeignKey(x => x.FormFieldId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FormField>()
+                .HasOne(x => x.FormAutofillMapping)
+                .WithMany()
+                .HasForeignKey(x => x.FormAutofillMappingId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         public DbSet<User> Users { get; set; }
@@ -101,5 +107,7 @@ namespace WebObrasci1.Data
         public DbSet<FormSubmission> FormSubmissions { get; set; }
 
         public DbSet<FormSubmissionApproval> FormSubmissionApproval { get; set; }
+
+        public DbSet<FormAutofillMapping> FormAutofillMappings { get; set; }
     }
 }

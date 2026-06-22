@@ -16,5 +16,8 @@ namespace WebObrasci1.Models
         public int? MaxValue { get; set; }
         public StringType? StringType { get; set; }
         public ICollection<FormFieldSelectValue> SelectValues { get; set; } = [];
+
+        public FormAutofillMapping? FormAutofillMapping { get; set; }
+        public int? FormAutofillMappingId { get; set; }
     }
 }

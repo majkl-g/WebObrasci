@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
+using WebObrasci1.Services;
 
-namespace WebObrasci1.Pages.Admin.Forms
+namespace WebObrasci1.Pages.Admin.Mappings
 {
-    public class EditModel : FormModel
+    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    public class EditModel : MappingModel
     {
         private readonly AppDbContext _context;
         public EditModel(AppDbContext context) => _context = context;
@@ -13,9 +16,9 @@ namespace WebObrasci1.Pages.Admin.Forms
         {
             ViewData["ShowBanner"] = false;
 
-            var form = await _context.Forms.FindAsync(id);
-            if (form == null) return NotFound();
-            Form = form;
+            var mapping = await _context.FormAutofillMappings.FindAsync(id);
+            if (mapping == null) return NotFound();
+            Mapping = mapping;
             return Page();
         }
 
@@ -24,9 +27,9 @@ namespace WebObrasci1.Pages.Admin.Forms
         {
             if (!ModelState.IsValid) return Page();
 
-            _context.Update(Form);
+            _context.Update(Mapping);
             await _context.SaveChangesAsync();
-            return RedirectToPage("IndexForm"); //takoðer
+            return RedirectToPage("IndexMapping"); //takoðer
         }
     }
 }

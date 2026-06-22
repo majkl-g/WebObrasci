@@ -1,0 +1,10 @@
+﻿@model WebObrasci1.Pages.Admin.Forms.FormModel
+@{
+    <input type="hidden" asp-for="Form.Id" />
+    <input type="hidden" asp-for="Form.RowVersion" />
+
+    <label>Title</label>
+    <input asp-for="Form.Title" class="form-control" />
+
+    <button type="submit">Save</button>
+}

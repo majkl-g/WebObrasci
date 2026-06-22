@@ -1,18 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
-using WebObrasci1.Models;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    public class EditModel : PageModel
+    public class EditModel : FieldModel
     {
         private readonly AppDbContext _context;
         public EditModel(AppDbContext context) => _context = context;
-
-        [BindProperty]
-        public FormField Field { get; set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -22,7 +17,15 @@ namespace WebObrasci1.Pages.Admin.Fields
                 .Include(x => x.SelectValues)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (field == null) return NotFound();
+
             Field = field;
+            AvailableMappings = await _context
+                .FormAutofillMappings
+                .Where(x => x.Active)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Id)
+                .ToListAsync();
+
             return Page();
         }
 

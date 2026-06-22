@@ -12,7 +12,7 @@
     <div class="alert alert-info">@TempData["Message"]</div>
 }
 
-@if (Model.SubmissionsPage.IsEmpty)
+@if (Model.PageData.IsEmpty)
 {
     <p>No submissions found.</p>
 }
@@ -28,9 +28,9 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var s in Model.SubmissionsPage.PageData)
+            @foreach (var s in Model.PageData.PageData)
             {
-                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == Role.Profesor);
+                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == Role.Profesor && a.Denied == false);
                 var isDenied = s.Approvals.Any(a => a.Denied);
                 var status = isApproved ? "Prihvaćeno" : (isDenied ? "Odbijeno" : "U obradi");
 
@@ -56,17 +56,17 @@ else
         </tbody>
     </table>
 
-    @if (Model.SubmissionsPage.TotalPages > 1)
+    @if (Model.PageData.TotalPages > 1)
     {
         <div class="paging">
-            @if (Model.SubmissionsPage.PageNumber > 1)
+            @if (Model.PageData.PageNumber > 1)
             {
-                <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.SubmissionsPage.PageNumber - 1)" class="btn btn-sm btn-primary">Prethodna</a>
+                <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.PageData.PageNumber - 1)" class="btn btn-sm btn-primary">Prethodna</a>
             }
-            <p>@Model.SubmissionsPage.PageNumber</p>
-            @if (Model.SubmissionsPage.PageNumber < Model.SubmissionsPage.TotalPages)
+            <p>@Model.PageData.PageNumber</p>
+            @if (Model.PageData.PageNumber < Model.PageData.TotalPages)
             {
-                <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.SubmissionsPage.PageNumber + 1)" class="btn btn-sm btn-primary">Sljedeca</a>
+                <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.PageData.PageNumber + 1)" class="btn btn-sm btn-primary">Sljedeca</a>
             }
         </div>
     }
