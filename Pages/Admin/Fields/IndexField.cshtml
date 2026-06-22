@@ -4,10 +4,9 @@
     <h1>Promjena naslova obrasca</h1>
 
     <form method="post">
-        <input type="hidden" asp-for="Form.Id" />
-        <label>Title</label>
-        <input asp-for="Form.Title" />
-        <button type="submit">Spremi</button>
+        @{
+            await Html.RenderPartialAsync("../Forms/_Model.cshtml", Model);
+        }
     </form>
 
     <hr />

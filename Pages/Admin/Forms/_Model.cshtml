@@ -3,8 +3,11 @@
     <input type="hidden" asp-for="Form.Id" />
     <input type="hidden" asp-for="Form.RowVersion" />
 
-    <label>Title</label>
+    <label asp-for="Form.Title">Naslov</label>
     <input asp-for="Form.Title" class="form-control" />
+
+    <label asp-for="Form.Enabled">Aktivan</label>
+    <input type="checkbox" asp-for="Form.Enabled" />
 
     <button type="submit">Save</button>
 }

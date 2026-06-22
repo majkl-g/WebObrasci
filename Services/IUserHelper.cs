@@ -9,5 +9,6 @@ namespace WebObrasci1.Services
         Task<User> GetOrCreateUserAsync(ClaimsPrincipal User);
         string GetUserId(ClaimsPrincipal principal);
         string GetUserName(ClaimsPrincipal principal);
+        string GetValue(ClaimsPrincipal principal, string claimName);
     }
 }

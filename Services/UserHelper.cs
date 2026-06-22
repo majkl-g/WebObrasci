@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using System.Text.Json;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
 using WebObrasci1.Settings;
@@ -40,6 +41,26 @@ namespace WebObrasci1.Services
             if (email?.Value == null)
                 throw new UnauthorizedAccessException($"User '{principal.Identity?.Name}' does not have an Email claim '{_userSettings.Value.EmailClaim}'");
             return email.Value;
+        }
+
+        public string GetValue(ClaimsPrincipal principal, string claimName)
+        {
+            var claim = principal.Claims.FirstOrDefault(x => x.Type == claimName);
+            if (string.IsNullOrEmpty(claim?.Value) == false)
+            {
+                try
+                {
+                    var values = JsonSerializer.Deserialize<string[]>(claim.Value);
+                    if (values != null)
+                        return values.FirstOrDefault() ?? string.Empty;
+                }
+                catch (JsonException)
+                {
+                    //ignore
+                }
+                return claim.Value;
+            }
+            return string.Empty;
         }
 
         public async Task<User> GetOrCreateUserAsync(ClaimsPrincipal User)

@@ -20,6 +20,7 @@ var authSettings = builder.Configuration.GetSection("AuthSettings");
 var authUrl = authSettings.GetValue<string>("AuthUrl");
 var clientId = authSettings.GetValue<string>("ClientId");
 var clientSecret = authSettings.GetValue<string>("ClientSecret");
+var scopes = authSettings.GetValue<string[]>("Scopes") ?? [];
 
 // Add authentication and OpenIdConnect
 builder.Services.AddAuthentication(options =>
@@ -40,6 +41,8 @@ builder.Services.AddAuthentication(options =>
     options.ClaimActions.MapUniqueJsonKey("sub", "sub");
     options.TokenValidationParameters.NameClaimType = "sub";
     //options.TokenValidationParameters.RoleClaimType = "roles";
+    foreach(var scope in scopes)
+        options.Scope.Add(scope);
 });
 
 builder.Services.AddOptions<UserSettings>()
