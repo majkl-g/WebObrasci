@@ -64,11 +64,13 @@ s/bootstrap.min.css" />
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
 
-
-                            <a class="nav-link text-dark" asp-area="" asp-page="/FormsList">Lista obrazaca</a>
-                        </li>
+                        @if (User.IsInRole(Role.Student))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/FormsList">Lista obrazaca</a>
+                            </li>
+                        }
 
                         @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
                         {

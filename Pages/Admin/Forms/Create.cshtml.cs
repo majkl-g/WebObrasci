@@ -15,6 +15,7 @@ namespace WebObrasci1.Pages.Admin.Forms
 
         public void OnGet() 
         {
+            Form.Enabled = true;
             ViewData["ShowBanner"] = false;
         }
 
