@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>();
 
 var authSettings = builder.Configuration.GetSection("AuthSettings");
 var authUrl = authSettings.GetValue<string>("AuthUrl");
+var returnUrl = authSettings.GetValue<string>("ReturnUrl");
 var clientId = authSettings.GetValue<string>("ClientId");
 var clientSecret = authSettings.GetValue<string>("ClientSecret");
 var scopes = authSettings.GetValue<string[]>("Scopes") ?? [];
@@ -32,6 +33,11 @@ builder.Services.AddAuthentication(options =>
 .AddOpenIdConnect("oidc", options =>
 {
     options.Authority = authUrl;
+    if (string.IsNullOrEmpty(returnUrl) == false)
+    {
+        options.ReturnUrlParameter = returnUrl;
+        options.AccessDeniedPath = "/";
+    }
     options.ClientId = clientId;
     options.ClientSecret = clientSecret;
     options.ResponseType = "code";
