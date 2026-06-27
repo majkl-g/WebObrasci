@@ -28,7 +28,13 @@
             var field = dtoField.Field;
 
             <div class="form-field">
-                <label class="field-label">@field.Label</label>
+                <label class="field-label">
+                    @field.Label
+                    @if (field.Required)
+                    {
+                        <span class="required-indicator">*</span>
+                    }
+                </label>
 
                 @if (field.Type == Models.FormFieldType.Text)
                 {
@@ -62,29 +68,29 @@
                     <input type="checkbox" name="Answers[@field.Name]" class="field-input" 
                             value="@dtoField.AutofillValueBool" required="@(field.Required ? "true" : null)" />
                 }
-                else if(field.Type == Models.FormFieldType.Select){
-                    <select name="Answers[@field.Name]">
-                        @foreach(var sel in field.SelectValues){
-                            if (sel.Value == dtoField.AutofillValue)
+                else if(field.Type == Models.FormFieldType.Select)
+                {
+                    @foreach ((var sel, int i) in field.SelectValues.Select((x, i) => (x, i)))
+                    {
+                        <div>
+                            @if (sel.Value == dtoField.AutofillValue)
                             {
-                                <option value="@sel.Value" selected>@sel.Value</option>
+                                <input type="radio" id="@(@field.Name + i)" name="Answers[@field.Name]"
+                                       value="@sel.Value" checked/>
                             }
                             else
                             {
-                                <option value="@sel.Value">@sel.Value</option>
+                                <input type="radio" id="@(@field.Name + i)" name="Answers[@field.Name]"
+                                       value="@sel.Value" />
                             }
-                        }
-                    </select>
+                            <label for="@(@field.Name + i)">@sel.Value</label>
+                        </div>
+                    }
                 }
                 else
                 {
                     <textarea name="Answers[@field.Name]" class="field-textarea" rows="3" 
                             value="@dtoField.AutofillValue" required="@(field.Required ? "true" : null)"></textarea>
-                }
-
-                @if (field.Required)
-                {
-                    <span class="required-indicator">*</span>
                 }
             </div>
         }
