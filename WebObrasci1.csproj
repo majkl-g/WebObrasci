@@ -21,4 +21,20 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>false</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+	
+    <ItemGroup>
+	    <Content Update="appsettings.Development.Keycloak.json">
+		    <CopyToOutputDirectory>false</CopyToOutputDirectory>
+		    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		    <CopyToPublishDirectory>false</CopyToPublishDirectory>
+	    </Content>
+    </ItemGroup>
+
 </Project>

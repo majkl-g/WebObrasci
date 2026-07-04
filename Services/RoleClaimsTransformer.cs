@@ -36,15 +36,18 @@ namespace WebObrasci1.Services
             {
                 if (string.IsNullOrEmpty(claim?.Value) == false)
                 {
-                    try
+                    if (claim.Value.StartsWith("["))
                     {
-                        var values = JsonSerializer.Deserialize<string[]>(claim.Value);
-                        if (values != null && values.Contains(targetValue))
-                            return true;
-                    }
-                    catch (JsonException)
-                    {
-                        //skip this claim
+                        try
+                        {
+                            var values = JsonSerializer.Deserialize<string[]>(claim.Value);
+                            if (values != null && values.Contains(targetValue))
+                                return true;
+                        }
+                        catch (JsonException)
+                        {
+                            //skip this claim
+                        }
                     }
 
                     //fallback if not json array:

@@ -1,12 +1,12 @@
 using WebObrasci1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.Options;
-using WebObrasci1.Models;
 using WebObrasci1.Services;
 using WebObrasci1.Settings;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using WebObrasci1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,12 +21,13 @@ var authUrl = authSettings.GetValue<string>("AuthUrl");
 var returnUrl = authSettings.GetValue<string>("ReturnUrl");
 var clientId = authSettings.GetValue<string>("ClientId");
 var clientSecret = authSettings.GetValue<string>("ClientSecret");
-var scopes = authSettings.GetValue<string[]>("Scopes") ?? [];
+var scopes = authSettings.GetSection("Scopes").Get<IEnumerable<string>>()?.ToList() ?? [];
+var requireHttpsMetadata = authSettings.GetValue<bool>("RequireHttpsMetadata");
 
 // Add authentication and OpenIdConnect
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = "Cookies";
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = "oidc";
 })
 .AddCookie()
@@ -40,15 +41,26 @@ builder.Services.AddAuthentication(options =>
     }
     options.ClientId = clientId;
     options.ClientSecret = clientSecret;
-    options.ResponseType = "code";
+    options.ResponseType = OpenIdConnectResponseType.Code;
     options.SaveTokens = true;
     //options.SaveTokens = false;
-    options.RequireHttpsMetadata = false;
-    options.ClaimActions.MapUniqueJsonKey("sub", "sub");
-    options.TokenValidationParameters.NameClaimType = "sub";
-    //options.TokenValidationParameters.RoleClaimType = "roles";
-    foreach(var scope in scopes)
+    options.RequireHttpsMetadata = requireHttpsMetadata;
+
+    options.Scope.Add("offline_access");
+    options.Scope.Add("openid");
+    foreach (var scope in scopes)
         options.Scope.Add(scope);
+
+    options.GetClaimsFromUserInfoEndpoint = true;
+
+    options.Events = new OpenIdConnectEvents
+    {
+        OnTokenResponseReceived = context =>
+        {
+            return Task.CompletedTask;
+        },
+        OnUserInformationReceived = AuthorizationHelper.AppendUserInfoToPrincipalAsync,
+    };
 });
 
 builder.Services.AddOptions<UserSettings>()
@@ -99,7 +111,7 @@ app.UseAuthorization();
 
 app.MapGet("/logout", async context =>
 {
-    await context.SignOutAsync("Cookies");
+    await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     await context.SignOutAsync("oidc");
 });
 app.MapGet("/login", async context =>
