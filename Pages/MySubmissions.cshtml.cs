@@ -12,13 +12,17 @@ namespace WebObrasci1.Pages
     public class MySubmissionsModel : PagedPageModel<FormSubmission>
     {
         private readonly AppDbContext _context;
+        private readonly IUserHelper _userHelper;
 
-        public MySubmissionsModel(AppDbContext context) => _context = context;
+        public MySubmissionsModel(AppDbContext context, IUserHelper userHelper)
+        {
+            _context = context;
+            _userHelper = userHelper;
+        }
 
         public override async Task<(IList<FormSubmission> Data, int Total)> GetPageDataAsync(int skip, int take)
         {
-            var externalId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                           ?? User.FindFirst("sub")?.Value;
+            var externalId = _userHelper.GetUserId(User);
 
             if (string.IsNullOrWhiteSpace(externalId))
                 return ([], 0);

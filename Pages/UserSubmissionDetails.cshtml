@@ -1,5 +1,6 @@
 ﻿@page "{id:int}"
 @model WebObrasci1.Pages.UserSubmissionDetailsModel
+@using WebObrasci1.Services;
 @{
     ViewData["Title"] = "Detalji predaje";
 }
@@ -75,16 +76,19 @@ else
     {
         <p><strong>Status:</strong> U obradi</p>
 
-        <form method="post">
-            <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
-            <input type="hidden" name="action" value="approve" />
-            <button type="submit">Prihvati</button>
-        </form>
+        @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
+        {
+            <form method="post">
+                <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
+                <input type="hidden" name="action" value="approve" />
+                <button type="submit">Prihvati</button>
+            </form>
 
-        <form method="post">
-            <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
-            <input type="hidden" name="action" value="deny" />
-            <button type="submit">Odbij</button>
-        </form>
+            <form method="post">
+                <input type="hidden" name="submissionId" value="@Model.Submission.Id" />
+                <input type="hidden" name="action" value="deny" />
+                <button type="submit">Odbij</button>
+            </form>
+        }
     }
 }
