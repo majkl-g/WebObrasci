@@ -16,13 +16,11 @@ builder.Configuration.AddEnvironmentVariables("WebObrasci_");
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>();
 
-var authSettings = builder.Configuration.GetSection("AuthSettings");
-var authUrl = authSettings.GetValue<string>("AuthUrl");
-var returnUrl = authSettings.GetValue<string>("ReturnUrl");
-var clientId = authSettings.GetValue<string>("ClientId");
-var clientSecret = authSettings.GetValue<string>("ClientSecret");
-var scopes = authSettings.GetSection("Scopes").Get<IEnumerable<string>>()?.ToList() ?? [];
-var requireHttpsMetadata = authSettings.GetValue<bool>("RequireHttpsMetadata");
+var authSettingsSection = builder.Configuration.GetSection("AuthSettings");
+var authSettings = authSettingsSection.Get<AuthSettings>() ?? new AuthSettings();
+
+var userSettingsSection = builder.Configuration.GetSection("UserSettings");
+var userSettings = userSettingsSection.Get<UserSettings>() ?? new UserSettings();
 
 // Add authentication and OpenIdConnect
 builder.Services.AddAuthentication(options =>
@@ -33,23 +31,26 @@ builder.Services.AddAuthentication(options =>
 .AddCookie()
 .AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = authUrl;
-    if (string.IsNullOrEmpty(returnUrl) == false)
+    options.Authority = authSettings.AuthUrl;
+    if (string.IsNullOrEmpty(authSettings.ReturnUrl) == false)
     {
-        options.ReturnUrlParameter = returnUrl;
+        options.ReturnUrlParameter = authSettings.ReturnUrl;
         options.AccessDeniedPath = "/";
     }
-    options.ClientId = clientId;
-    options.ClientSecret = clientSecret;
+    options.ClientId = authSettings.ClientId;
+    options.ClientSecret = authSettings.ClientSecret;
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.SaveTokens = true;
     //options.SaveTokens = false;
-    options.RequireHttpsMetadata = requireHttpsMetadata;
+    options.RequireHttpsMetadata = authSettings.RequireHttpsMetadata;
 
     options.Scope.Add("offline_access");
     options.Scope.Add("openid");
-    foreach (var scope in scopes)
+    foreach (var scope in authSettings.Scopes)
         options.Scope.Add(scope);
+
+    if (string.IsNullOrEmpty(userSettings.UsernameClaim) == false)
+        options.TokenValidationParameters.NameClaimType = userSettings.UsernameClaim;
 
     options.GetClaimsFromUserInfoEndpoint = true;
 
