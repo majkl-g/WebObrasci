@@ -45,7 +45,7 @@ namespace WebObrasci1.Pages
 
             foreach (var field in Form.Fields)
             {
-                if (field.Field.FormAutofillMapping != null)
+                if (field.Field.FormAutofillMapping != null && field.Field.FormAutofillMapping.Active)
                 {
                     field.AutofillValue = _userHelper.GetValue(User, field.Field.FormAutofillMapping.Mapping);
                 }
