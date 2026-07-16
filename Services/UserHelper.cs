@@ -75,9 +75,7 @@ namespace WebObrasci1.Services
             var email = GetEmail(User);
 
             string role = "";
-            if (User.IsInRole(Role.Admin))
-                role = Role.Admin;
-            else if (User.IsInRole(Role.Profesor))
+            if (User.IsInRole(Role.Profesor))
                 role = Role.Profesor;
             else if (User.IsInRole(Role.Student))
                 role = Role.Student;

@@ -23,8 +23,6 @@ namespace WebObrasci1.Services
                 identity.AddClaim(new Claim(ClaimTypes.Role, Role.Student));
             else if (HasJsonClaimValue(identity, _roleSettings.Value.ProfesorClaim, _roleSettings.Value.ProfesorClaimValue))
                 identity.AddClaim(new Claim(ClaimTypes.Role, Role.Profesor));
-            else if (HasJsonClaimValue(identity, _roleSettings.Value.AdminClaim, _roleSettings.Value.AdminClaimValue))
-                identity.AddClaim(new Claim(ClaimTypes.Role, Role.Admin));
 
             return Task.FromResult(principal);
         }

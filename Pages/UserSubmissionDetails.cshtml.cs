@@ -39,7 +39,7 @@ namespace WebObrasci1.Pages
 
             ExternalUserId = _userHelper.GetUserId(User);
 
-            if (User.IsInRole(Role.Profesor) == false && User.IsInRole(Role.Admin) == false)
+            if (User.IsInRole(Role.Profesor) == false)
             {
                 query = query.Where(x => x.User.ExternalId == ExternalUserId);
             }
@@ -57,7 +57,7 @@ namespace WebObrasci1.Pages
 
         public async Task<IActionResult> OnPostAsync(int submissionId, int approvalId, string action)
         {
-            if (User.IsInRole(Role.Profesor) ||  User.IsInRole(Role.Admin))
+            if (User.IsInRole(Role.Profesor))
             {
                 var extId = _userHelper.GetUserId(User);
 

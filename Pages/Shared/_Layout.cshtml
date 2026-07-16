@@ -72,7 +72,7 @@ s/bootstrap.min.css" />
                             </li>
                         }
 
-                        @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
+                        @if (User.IsInRole(Role.Profesor))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/UserSubmissions">Ispunjeni Obrasci</a>
@@ -82,7 +82,7 @@ s/bootstrap.min.css" />
                             </li>
 
                         }
-                        @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
+                        @if (User.IsInRole(Role.Profesor))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Admin/Mappings/IndexMapping">Mapiranja</a>

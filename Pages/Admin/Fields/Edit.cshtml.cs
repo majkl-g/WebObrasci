@@ -6,7 +6,7 @@ using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    [Authorize(Roles = Role.Profesor)]
     public class EditModel : FieldModel
     {
         private readonly AppDbContext _context;

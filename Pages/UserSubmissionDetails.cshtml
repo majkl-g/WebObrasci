@@ -76,7 +76,7 @@ else
     {
         <p><strong>Status:</strong> U obradi</p>
 
-        @if (User.IsInRole(Role.Profesor) || User.IsInRole(Role.Admin))
+        @if (User.IsInRole(Role.Profesor))
         {
             <form method="post">
                 <input type="hidden" name="submissionId" value="@Model.Submission.Id" />

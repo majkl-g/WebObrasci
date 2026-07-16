@@ -8,7 +8,7 @@ using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    [Authorize(Roles = Role.Profesor)]
     public class DeleteModel : PageModel
     {
         private readonly AppDbContext _context;

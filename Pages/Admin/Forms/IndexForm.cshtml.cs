@@ -8,7 +8,7 @@ using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Forms
 {
-    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    [Authorize(Roles = Role.Profesor)]
     public class IndexFormModel : PageModel
     {
         private readonly AppDbContext _context;

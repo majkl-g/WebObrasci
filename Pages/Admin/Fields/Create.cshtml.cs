@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
-using WebObrasci1.Models;
 using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    [Authorize(Roles = Role.Profesor)]
     public class CreateModel : FieldModel
     {
         private readonly AppDbContext _context;

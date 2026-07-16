@@ -7,7 +7,7 @@ using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Mappings
 {
-    [Authorize(Roles = Role.ProfesorOrAdmin)]
+    [Authorize(Roles = Role.Profesor)]
     public class IndexMappingModel : PagedPageModel<FormAutofillMapping>
     {
         private readonly AppDbContext _context;

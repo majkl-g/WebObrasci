@@ -10,7 +10,5 @@
         public string StudentClaimValue { get; set; } = "student";
         public string ProfesorClaim { get; set; } = "hrEduPersonAffiliation";
         public string ProfesorClaimValue { get; set; } = "djelatnik";
-        public string AdminClaim { get; set; } = "Admin";
-        public string AdminClaimValue { get; set; } = "Admin";
     }
 }
