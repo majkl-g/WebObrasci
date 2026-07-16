@@ -48,20 +48,6 @@ namespace WebObrasci1.Services
             var claim = principal.Claims.FirstOrDefault(x => x.Type == claimName);
             if (string.IsNullOrEmpty(claim?.Value) == false)
             {
-                if (claim.Value.StartsWith("["))
-                {
-                    try
-                    {
-                        var values = JsonSerializer.Deserialize<string[]>(claim.Value);
-                        if (values != null)
-                            return values.FirstOrDefault() ?? string.Empty;
-                    }
-                    catch (JsonException)
-                    {
-                        //ignore
-                    }
-                }
-
                 return claim.Value;
             }
             return string.Empty;
