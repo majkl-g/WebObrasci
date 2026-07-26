@@ -69,8 +69,7 @@ builder.Services.AddOptions<UserSettings>()
 
 builder.Services.AddScoped<IClaimsTransformation, RoleClaimsTransformer>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
-
-
+builder.Services.AddScoped<IPdfConverter, PdfConverter>();
 
 var app = builder.Build();
 

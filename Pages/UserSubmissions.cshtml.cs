@@ -13,11 +13,13 @@ namespace WebObrasci1.Pages
     {
         private readonly AppDbContext _context;
         private readonly IUserHelper _userHelper;
+        private readonly IPdfConverter _pdfConverter;
 
-        public UserSubmissionsModel(AppDbContext context, IUserHelper userHelper)
+        public UserSubmissionsModel(AppDbContext context, IUserHelper userHelper, IPdfConverter pdfConverter)
         {
             _context = context;
             _userHelper = userHelper;
+            _pdfConverter = pdfConverter;
         }
 
         public override async Task<(IList<FormSubmission> Data, int Total)> GetPageDataAsync(int skip, int take)
@@ -93,6 +95,26 @@ namespace WebObrasci1.Pages
 
             TempData["Message"] = "Obrazac odbijen";
             return RedirectToPage();
+        }
+
+        public async Task<ActionResult> OnPostDownloadPdfAsync(int submissionId)
+        {
+            var submission = await _context.FormSubmissions
+                .Include(x => x.Form)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(s => s.Id == submissionId);
+
+            if (submission == null)
+                return NotFound();
+
+            var pdf = _pdfConverter.ConvertToPdf(submission);
+            var fileName = $"{submission.Form.Title}_{submission.User.UserName}_{submission.SubmittedAt.ToLongDateString()}.pdf";
+
+            var result = new FileStreamResult(pdf, "application/pdf")
+            {
+                FileDownloadName = fileName,
+            };
+            return result;
         }
     }
 }
