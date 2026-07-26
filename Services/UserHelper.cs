@@ -81,17 +81,34 @@ namespace WebObrasci1.Services
                     Title = null,
                 };
 
-                _context.Users.Add(user);
+                user = _context.Users.Add(user).Entity;
             }
             else
             {
                 // Update user info on login
-                user.UserName = username ?? user.UserName;
-                user.Email = email ?? user.Email;
+                if (!string.IsNullOrEmpty(username) && user.UserName != username)
+                {
+                    user.UserName = username;
+                }
+                if (!string.IsNullOrEmpty(email) && user.Email != email)
+                {
+                    user.Email = email;
+                }
+  
             }
 
             await _context.SaveChangesAsync();
             return user;
+        }
+
+        public async Task SaveMentorAsync(ClaimsPrincipal principal, string? mentorName, string? mentorEmail)
+        {
+            var user = await GetOrCreateUserAsync(principal);
+
+            user.MentorName = mentorName;
+            user.MentorMail = mentorEmail;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

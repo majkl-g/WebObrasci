@@ -10,5 +10,6 @@ namespace WebObrasci1.Services
         string GetUserId(ClaimsPrincipal principal);
         string GetUserName(ClaimsPrincipal principal);
         string GetValue(ClaimsPrincipal principal, string claimName);
+        Task SaveMentorAsync(ClaimsPrincipal principal, string? mentorName, string? mentorEmail);
     }
 }

@@ -1,0 +1,18 @@
+﻿@page
+@model WebObrasci1.Pages.MentorSelectionModel
+@using System.Text.Json;
+@{
+    ViewData["Title"] = "Odabir mentora";
+}
+
+<div class="form-container">
+    <form method="post">
+
+        @Html.LabelFor(m => m.SelectedMentorJson, "Odabir mentora")
+        @Html.DropDownListFor(m => m.SelectedMentorJson, Model.MentoriSelectList, "-- Odaberi mentora --", null)
+
+        <div class="form-footer">
+            <button type="submit" class="btn-submit">Pošalji obrazac</button>
+        </div>
+    </form>
+</div>

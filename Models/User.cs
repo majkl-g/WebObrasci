@@ -9,5 +9,8 @@ namespace WebObrasci1.Models
         public string Email { get; set; } = "";
         public string Role { get; set; } = "";
         public string? Title { get; set; }
+        public string? MentorName { get; set; }
+        public string? MentorMail { get; set; }
+
     }
 }
