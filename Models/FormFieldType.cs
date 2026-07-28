@@ -9,5 +9,7 @@
         Date = 4,
         CheckBox = 5,
         Integer = 6,
+        Section = 7,//not input, but just section
+        SubSection = 8,//not input, but just section
     }
 }

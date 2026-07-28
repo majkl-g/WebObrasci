@@ -21,7 +21,7 @@
             let val = e.value;
             let minMaxDiv = document.getElementById("field-min-max");
             if (minMaxDiv){
-                if (val == "@FormFieldType.Decimal" || val == "@FormFieldType.Integer"){
+                if (val == "@(FormFieldType.Decimal)" || val == "@(FormFieldType.Integer)"){
                     minMaxDiv.classList.remove("hidden");
                 }
                 else{
@@ -31,11 +31,21 @@
 
             let selectValsDiv = document.getElementById("field-select-vals");
             if(selectValsDiv){
-                if (val == "@FormFieldType.Select"){
+                if (val == "@(FormFieldType.Select)"){
                     selectValsDiv.classList.remove("hidden");
                 }
                 else{
                     selectValsDiv.classList.add("hidden");
+                }
+            }
+
+            let fieldExtras = document.getElementById("field-extras");
+            if(fieldExtras){
+                if (val == "@(FormFieldType.Section)" || val == "@(FormFieldType.SubSection)") {
+                    fieldExtras.classList.add("hidden");
+                }
+                else {
+                    fieldExtras.classList.remove("hidden");
                 }
             }
         }
@@ -106,6 +116,8 @@
             <option value="@FormFieldType.Select">Select</option>
             <option value="@FormFieldType.Date">Date</option>
             <option value="@FormFieldType.CheckBox">CheckBox</option>
+            <option value="@FormFieldType.Section">Sekcija</option>
+            <option value="@FormFieldType.SubSection">Podsekcija</option>
         </select>
     </div>
 
@@ -124,20 +136,22 @@
         <button type="button" onclick="addFieldSelectVal()">Dodaj</button>
     </div>
 
-    <div>
-        <label asp-for="@Model.Field.Required"></label>
-        <input asp-for="@Model.Field.Required" type="checkbox" />
-    </div>
+    <div id="field-extras">
+        <div>
+            <label asp-for="@Model.Field.Required"></label>
+            <input asp-for="@Model.Field.Required" type="checkbox" />
+        </div>
 
-    <div>
-        <label asp-for="@Model.Field.FormAutofillMappingId">Mapiranje</label>
-        <select asp-for="@Model.Field.FormAutofillMappingId" class="form-control">
-            <option value="">Bez mapiranja</option>
-            @foreach (var m in Model.AvailableMappings)
-            {
-                <option value="@m.Id">@m.Name</option>
-            }
-        </select>
+        <div>
+            <label asp-for="@Model.Field.FormAutofillMappingId">Mapiranje</label>
+            <select asp-for="@Model.Field.FormAutofillMappingId" class="form-control">
+                <option value="">Bez mapiranja</option>
+                @foreach (var m in Model.AvailableMappings)
+                {
+                    <option value="@m.Id">@m.Name</option>
+                }
+            </select>
+        </div>
     </div>
 
     <button type="submit">Spremi</button>

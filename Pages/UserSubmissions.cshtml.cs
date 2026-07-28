@@ -101,7 +101,10 @@ namespace WebObrasci1.Pages
         {
             var submission = await _context.FormSubmissions
                 .Include(x => x.Form)
+                .ThenInclude(x => x.Fields)
+                .ThenInclude(x => x.SelectValues)
                 .Include(x => x.User)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(s => s.Id == submissionId);
 
             if (submission == null)

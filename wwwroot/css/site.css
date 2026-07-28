@@ -176,6 +176,15 @@ a {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.form-section-name {
+    color: #0077cc;
+    font-weight: bold;
+}
+
+.form-subsection-name {
+    color: #0077cc;
+}
+
 .field-input,
 .field-textarea {
     width: 100%;

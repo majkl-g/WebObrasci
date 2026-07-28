@@ -28,13 +28,17 @@
             var field = dtoField.Field;
 
             <div class="form-field">
-                <label class="field-label">
-                    @field.Label
-                    @if (field.Required)
-                    {
-                        <span class="required-indicator">*</span>
-                    }
-                </label>
+
+                @if (field.Type != Models.FormFieldType.Section && field.Type != Models.FormFieldType.SubSection)
+                {
+                    <label class="field-label">
+                        @field.Label
+                        @if (field.Required)
+                        {
+                            <span class="required-indicator">*</span>
+                        }
+                    </label>
+                }
 
                 @if (field.Type == Models.FormFieldType.Text)
                 {
@@ -86,6 +90,14 @@
                             <label for="@(@field.Name + i)">@sel.Value</label>
                         </div>
                     }
+                }
+                else if (field.Type == Models.FormFieldType.Section)
+                {
+                    <h3 class="form-section-name">@field.Label</h3>
+                }
+                else if (field.Type == Models.FormFieldType.SubSection)
+                {
+                    <p class="form-subsection-name">@field.Label</p>
                 }
                 else
                 {
