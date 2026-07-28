@@ -5,6 +5,7 @@
     <input type="hidden" asp-for="@Model.Field.Id" />
     <input type="hidden" asp-for="@Model.Field.FormId" />
     <input type="hidden" asp-for="@Model.Field.RowVersion" />
+    <input type="hidden" asp-for="@Model.Field.Order" />
 
     <div>
         <label asp-for="@Model.Field.Label"></label>
@@ -110,6 +111,7 @@
         <label asp-for="@Model.Field.Type"></label>
         <select asp-for="@Model.Field.Type" class="form-control" onchange="onFieldTypeChange(this)">
             <option value="@FormFieldType.Text">Text</option>
+            <option value="@FormFieldType.TextArea">Text area</option>
             <option value="@FormFieldType.Email">Email</option>
             <option value="@FormFieldType.Decimal">Decimal</option>
             <option value="@FormFieldType.Integer">Integer</option>
