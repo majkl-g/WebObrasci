@@ -15,13 +15,26 @@
     <a asp-page="Create" asp-route-formId="@Model.FormId">Dodaj Polje</a>
 
     <table class="table">
-        <tr><th>Naziv polja</th><th>Tip</th><th>Obavezno</th><th></th></tr>
+        <tr>
+            <th>Naziv polja</th>
+            <th>Tip</th>
+            <th>Obavezno</th>
+            <th></th>
+            <th></th>
+        </tr>
         @foreach (var f in Model.Fields)
         {
             <tr>
                 <td>@f.Label</td>
                 <td>@f.Type</td>
                 <td>@f.Required</td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="fieldId" value="@f.Id" />
+                        <button type="submit" asp-page-handler="MoveUp" class="btn btn-sm btn-primary">^</button>
+                        <button type="submit" asp-page-handler="MoveDown" class="btn btn-sm btn-primary">ˇ</button>
+                    </form>
+                </td>
                 <td>
                     <a asp-page="Edit" asp-route-id="@f.Id">Izmjeni</a> |
                     <a asp-page="Delete" asp-route-id="@f.Id">Izbriši</a>

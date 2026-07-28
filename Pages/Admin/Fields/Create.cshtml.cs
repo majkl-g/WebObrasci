@@ -33,9 +33,14 @@ namespace WebObrasci1.Pages.Admin.Fields
 
                 return Page();
             }
-
-           
+                       
             // if (!ModelState.IsValid) return Page();
+
+            var currentMax = await _context.FormFields
+                .Where(x => x.FormId == Field.FormId)
+                .MaxAsync(x => x.Order);
+
+            Field.Order = (currentMax ?? 0) + 1;
 
             _context.FormFields.Add(Field);
             await _context.SaveChangesAsync();

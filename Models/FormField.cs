@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace WebObrasci1.Models
 {
     public class FormField : BaseEntity
@@ -19,5 +18,6 @@ namespace WebObrasci1.Models
 
         public FormAutofillMapping? FormAutofillMapping { get; set; }
         public int? FormAutofillMappingId { get; set; }
+        public int? Order { get; set; }
     }
 }

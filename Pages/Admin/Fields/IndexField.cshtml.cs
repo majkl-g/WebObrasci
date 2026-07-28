@@ -30,7 +30,8 @@ namespace WebObrasci1.Pages.Admin.Fields
             Form = form;
             Fields = await _context.FormFields
                 .Where(x => x.FormId == formId)
-                .OrderBy(x => x.Id)
+                .OrderBy(x => x.Order)
+                .ThenBy(x => x.Id)
                 .ToListAsync();
 
             return Page();
@@ -43,6 +44,58 @@ namespace WebObrasci1.Pages.Admin.Fields
             _context.Forms.Update(Form);
             await _context.SaveChangesAsync();
             return RedirectToPage(new { formId = Form.Id });
+        }
+
+        public async Task<ActionResult> OnPostMoveUpAsync(int fieldId)
+        {
+            var field = await _context.FormFields.FirstOrDefaultAsync(x => x.Id == fieldId);
+
+            if (field != null)
+            {
+                var fieldPrevious = await _context.FormFields
+                    .Where(x => x.FormId == field.FormId)
+                    .Where(x => x.Order < field.Order)
+                    .OrderByDescending(x => x.Order)
+                    .ThenByDescending(x => x.Id)
+                    .FirstOrDefaultAsync();
+
+                if (fieldPrevious != null)
+                {
+                    var o = field.Order;
+                    field.Order = fieldPrevious.Order;
+                    fieldPrevious.Order = o;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToPage(new { formId = field?.FormId ?? 0 });
+        }
+
+        public async Task<ActionResult> OnPostMoveDownAsync(int fieldId)
+        {
+            var field = await _context.FormFields.FirstOrDefaultAsync(x => x.Id == fieldId);
+
+            if (field != null)
+            {
+                var fieldNext = await _context.FormFields
+                    .Where(x => x.FormId == field.FormId)
+                    .Where(x => x.Order > field.Order)
+                    .OrderBy(x => x.Order)
+                    .ThenBy(x => x.Id)
+                    .FirstOrDefaultAsync();
+
+                if (fieldNext != null)
+                {
+                    var o = field.Order;
+                    field.Order = fieldNext.Order;
+                    fieldNext.Order = o;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToPage(new { formId = field?.FormId ?? 0 });
         }
     }
 }

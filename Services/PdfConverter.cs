@@ -106,7 +106,7 @@ namespace WebObrasci1.Services
             var answers = JsonSerializer.Deserialize<Dictionary<string, string>>(formSubmission.DataJson);
             var counter = 0;
 
-            foreach(var field in formSubmission.Form.Fields)
+            foreach(var field in formSubmission.Form.Fields.OrderBy(x => x.Order).ThenBy(x => x.Id))
             {
                 if (field.Type == FormFieldType.Section)
                 {

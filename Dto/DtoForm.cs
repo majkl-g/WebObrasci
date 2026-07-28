@@ -11,7 +11,11 @@ namespace WebObrasci1.Dto
         {
             var f = new DtoForm();
             f.Title = form.Title;
-            f.Fields = form.Fields.Select(x => new DtoFormField(x)).ToList();
+            f.Fields = form.Fields
+                .OrderBy(x => x.Order)
+                .ThenBy(x => x.Id)
+                .Select(x => new DtoFormField(x))
+                .ToList();
             return f;
         }
     }
