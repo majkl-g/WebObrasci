@@ -18,13 +18,15 @@
 }
 else
 {
-    <table class="table">
+    <table class="table user-submission-table">
         <thead>
             <tr>
                 <th>Obrazac</th>
                 <th>Predan</th>
                 <th>Korisnik</th>
                 <th>Status</th>
+                <th></th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
@@ -40,19 +42,22 @@ else
                     <td>@s.SubmittedAt.ToLocalTime()</td>
                     <td>@s.User?.UserName</td>
                     <td>@status</td>
+                    <td><a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Pregled</a></td>
                     <td>
-                        @* <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id">Pregled</a> *@
-                        <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Pregled</a>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="submissionId" value="@s.Id" />
+                            <button type="submit" asp-page-handler="DownloadPdf" class="btn btn-sm btn-primary">Preuzmi PDF</button>
+                        </form>
+                    </td>
+                    <td>
                         @if (!isApproved && !isDenied)
                         {
                             <form method="post" style="display:inline;">
                                 <input type="hidden" name="submissionId" value="@s.Id" />
                                 <button type="submit" asp-page-handler="Approve" class="btn btn-sm btn-success">Prihvati</button>
-                                <button type="submit" asp-page-handler="Deny" class="btn btn-sm btn-danger">Odbij</button>
-                                <button type="submit" asp-page-handler="DownloadPdf" class="btn btn-sm">Preuzmi PDF</button>
+                                <button type="submit" asp-page-handler="Deny" class="btn btn-sm btn-danger">Odbij</button>                                
                             </form>
-                        }
-                        
+                        }                        
                     </td>
                 </tr>
             }

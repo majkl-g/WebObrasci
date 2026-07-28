@@ -338,6 +338,11 @@ button.accept-policy {
         background-color: #f8f9fa;
     }
 
+.table.user-submission-table tbody td {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
 /* Page Title */
 .page-title {
     font-size: 2rem;
