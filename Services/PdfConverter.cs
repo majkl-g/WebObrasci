@@ -103,7 +103,7 @@ namespace WebObrasci1.Services
             paragraphAnswers.Format.Font.Color = Color.Parse("#0066CC");
 
             //answers
-            var answers = JsonSerializer.Deserialize<Dictionary<string, string>>(formSubmission.DataJson);
+            var answers = JsonSerializer.Deserialize<Dictionary<string, string>>(formSubmission.DataJson);  
             var counter = 0;
 
             foreach(var field in formSubmission.Form.Fields.OrderBy(x => x.Order).ThenBy(x => x.Id))
@@ -137,7 +137,8 @@ namespace WebObrasci1.Services
                         {
                             fieldValue = date.ToString("dd.MM.yyyy.");
                         }
-
+                        
+                        
                         if (field.Type == FormFieldType.Select && field.SelectValues != null)
                         {
                             paragraphAnswers.AddLineBreak();
@@ -150,6 +151,13 @@ namespace WebObrasci1.Services
                             }
                             counter--;
                         }
+                        else if (field.Type == FormFieldType.TextArea)
+                        {
+                            paragraphAnswers.AddLineBreak();       
+                            var value = paragraphAnswers.AddFormattedText("\u00A0" + fieldValue);
+                            value.AddFormattedText("\u00A0");
+                            value.Font.Underline = Underline.Dotted;
+                        }
                         else
                         {
                             var value = paragraphAnswers.AddFormattedText("\u00A0\u00A0\u00A0" + fieldValue);
@@ -158,13 +166,29 @@ namespace WebObrasci1.Services
                         }
                     }
                     else
-                    {
-                        var value = paragraphAnswers.AddFormattedText(new string('\u00A0', 10));
-                        value.Font.Underline = Underline.Dotted;
+                    {   if (field.Type == FormFieldType.Select)
+                        {
+                            paragraphAnswers.AddLineBreak();
+                            foreach (var selectVal in field.SelectValues.OrderBy(x => x.Id))
+                            {
+                                var symbol = "O";
+                                var value = paragraphAnswers.AddFormattedText(
+                                    $"\u00A0\u00A0\u00A0 {symbol} {selectVal.Value}"
+                                );
+                                paragraphAnswers.AddLineBreak();
+                            }
+                            counter--;
+                        }
+                        else
+                        {
+                            var value = paragraphAnswers.AddFormattedText(new string('\u00A0', 20));
+                            value.Font.Underline = Underline.Dotted;
+                        }
+                        
                     }
                     
                     counter++;
-                    if (counter % 2 == 0)
+                    if (counter % 2 == 0 || field.Type == FormFieldType.TextArea)
                     {
                         paragraphAnswers.AddLineBreak();
                     }

@@ -3,7 +3,12 @@
 @{
     <h1>Brisanje obrasca</h1>
 
-    <p>Jeste li sigurni da želite izbrisati polje:  <strong>@Model.Form.Title</strong> ?</p>
+    <p>Jeste li sigurni da želite izbrisati obrazac:  <strong>@Model.Form.Title</strong> ?</p>
+
+    @if (@Model.ErrorMessage != null)
+    {
+        <p class="error">@Model.ErrorMessage</p>
+    }
     <form method="post">
         <input type="hidden" asp-for="Form.Id" />
         <button type="submit">Izbriši</button>

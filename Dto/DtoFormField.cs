@@ -15,6 +15,9 @@ namespace WebObrasci1.Dto
         public DtoFormField(FormField formField)
         {
             Field = formField;
+            Field.SelectValues = Field.SelectValues
+                .OrderBy(x => x.Value)
+                .ToList();
         }
 
         private static DateTime? ParseDate(string dateString)

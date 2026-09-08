@@ -6,7 +6,7 @@ namespace WebObrasci1.Pages.Shared
 {
     public abstract class PagedPageModel<T> : PageModel where T : class
     {
-        public const int _pageSize = 20;
+        public const int _pageSize = 10;
         protected virtual bool ShowBanner { get; } = false;
 
         public DtoPage<T> PageData { get; set; } = new([], 1, 1, 0);

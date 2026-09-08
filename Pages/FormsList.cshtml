@@ -16,7 +16,9 @@ else
         @foreach (var form in Model.PageData.PageData)
         {
             <li>
+                
                 <a asp-page="/FormFill" asp-route-id="@form.Id">
+                    @form.Code
                     @form.Title
                 </a>
             </li>

@@ -13,6 +13,7 @@ namespace WebObrasci1.Pages.Admin.Forms
     {
         private readonly AppDbContext _context;
         public DeleteModel(AppDbContext context) => _context = context;
+        public string? ErrorMessage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -29,8 +30,17 @@ namespace WebObrasci1.Pages.Admin.Forms
             var form = await _context.Forms.FindAsync(Form.Id);
             if (form != null)
             {
-                _context.Forms.Remove(form);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Forms.Remove(form);
+                    await _context.SaveChangesAsync();
+                } 
+                catch(DbUpdateException uEx) when (uEx.InnerException?.Message.Contains("FOREIGN KEY", StringComparison.InvariantCultureIgnoreCase) == true)
+                {
+                    ErrorMessage = "Definiciju obrasca nije moguće obrisati jer postoje ispunjeni obrasci.";
+                    Form = form;
+                    return Page();
+                }
             }
             return RedirectToPage("IndexForm"); //...
         }

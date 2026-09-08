@@ -1,12 +1,14 @@
-using WebObrasci1.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Globalization;
+using WebObrasci1;
+using WebObrasci1.Data;
 using WebObrasci1.Services;
 using WebObrasci1.Settings;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using WebObrasci1;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,8 @@ var userSettingsSection = builder.Configuration.GetSection("UserSettings");
 var userSettings = userSettingsSection.Get<UserSettings>() ?? new UserSettings();
 
 // Add authentication and OpenIdConnect
+
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -41,7 +45,6 @@ builder.Services.AddAuthentication(options =>
     options.ClientSecret = authSettings.ClientSecret;
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.SaveTokens = true;
-    //options.SaveTokens = false;
     options.RequireHttpsMetadata = authSettings.RequireHttpsMetadata;
 
     options.Scope.Add("offline_access");

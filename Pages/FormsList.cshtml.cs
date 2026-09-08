@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
 using WebObrasci1.Pages.Shared;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages
 {
+    [Authorize(Roles = Role.Student)]
     public class FormsListModel : PagedPageModel<Form>
     {
         private readonly AppDbContext _context;
@@ -19,7 +22,7 @@ namespace WebObrasci1.Pages
                 .Where(x => x.Enabled);
 
             var forms = await formsQuery
-                .OrderBy(x => x.Title)
+                .OrderBy(x => x.Code)
                 .ThenBy(x => x.Id)
                 .Skip(skip)
                 .Take(take)
