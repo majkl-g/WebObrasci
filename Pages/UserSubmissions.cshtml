@@ -1,4 +1,5 @@
 ﻿@page
+@using WebObrasci1.Services;
 @model WebObrasci1.Pages.UserSubmissionsModel
 @{
     ViewData["Title"] = "Predani obrasci";
@@ -11,47 +12,70 @@
     <div class="alert alert-info">@TempData["Message"]</div>
 }
 
-@if (!Model.Submissions.Any())
+@if (Model.PageData.IsEmpty)
 {
     <p>No submissions found.</p>
 }
 else
 {
-    <table class="table">
+    <table class="table user-submission-table">
         <thead>
             <tr>
                 <th>Obrazac</th>
                 <th>Predan</th>
+                <th>Korisnik</th>
                 <th>Status</th>
+                <th></th>
+                <th></th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var s in Model.Submissions)
+            @foreach (var s in Model.PageData.PageData)
             {
-                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == "Professor");
-                var isDenied = s.Approvals.Any(a => a.ApprovalAsRole == "Denied");
+                var isApproved = s.Approvals.Any(a => a.ApprovalAsRole == Role.Profesor && a.Denied == false);
+                var isDenied = s.Approvals.Any(a => a.Denied);
                 var status = isApproved ? "Prihvaćeno" : (isDenied ? "Odbijeno" : "U obradi");
 
                 <tr>
                     <td>@s.Form.Title</td>
                     <td>@s.SubmittedAt.ToLocalTime()</td>
+                    <td>@s.User?.UserName</td>
                     <td>@status</td>
+                    <td><a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Pregled</a></td>
                     <td>
-                        @* <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id">Pregled</a> *@
-                        <a asp-page="/UserSubmissionDetails" asp-route-id="@s.Id" class="btn btn-sm btn-primary">Pregled</a>
+                        <form method="post" style="display:inline;">
+                            <input type="hidden" name="submissionId" value="@s.Id" />
+                            <button type="submit" asp-page-handler="DownloadPdf" class="btn btn-sm btn-primary">Preuzmi PDF</button>
+                        </form>
+                    </td>
+                    <td>
                         @if (!isApproved && !isDenied)
                         {
                             <form method="post" style="display:inline;">
                                 <input type="hidden" name="submissionId" value="@s.Id" />
                                 <button type="submit" asp-page-handler="Approve" class="btn btn-sm btn-success">Prihvati</button>
-                                <button type="submit" asp-page-handler="Deny" class="btn btn-sm btn-danger">Odbij</button>
+                                <button type="submit" asp-page-handler="Deny" class="btn btn-sm btn-danger">Odbij</button>                                
                             </form>
-                        }
-                        
+                        }                        
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    @if (Model.PageData.TotalPages > 1)
+    {
+        <div class="paging">
+            @if (Model.PageData.PageNumber > 1)
+            {
+                <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.PageData.PageNumber - 1)" class="btn btn-sm btn-primary">Prethodna</a>
+            }
+            <p>@Model.PageData.PageNumber</p>
+            @if (Model.PageData.PageNumber < Model.PageData.TotalPages)
+            {
+                <a asp-page="/UserSubmissions" asp-route-pageNumber="@(Model.PageData.PageNumber + 1)" class="btn btn-sm btn-primary">Sljedeca</a>
+            }
+        </div>
+    }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using WebObrasci1.Data;
+using WebObrasci1.Dto;
 using WebObrasci1.Models;
 using WebObrasci1.Services;
 
@@ -21,19 +22,34 @@ namespace WebObrasci1.Pages
             _userHelper = userHelper;
         }
 
-        public Form Form { get; set; } = null!;
+        public DtoForm Form { get; set; } = null!;
 
         [BindProperty]
         public Dictionary<string, string> Answers { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            ViewData["ShowBanner"] = false;
             var form = await _context.Forms
+                .Where(x => x.Enabled)
                 .Include(f => f.Fields)
+                .ThenInclude(x => x.SelectValues)
+                .Include(f => f.Fields)
+                .ThenInclude(x => x.FormAutofillMapping)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(f => f.Id == id);
 
             if (form == null) return NotFound();
-            Form = form;
+
+            Form = DtoForm.FromForm(form);
+
+            foreach (var field in Form.Fields)
+            {
+                if (field.Field.FormAutofillMapping != null && field.Field.FormAutofillMapping.Active)
+                {
+                    field.AutofillValue = _userHelper.GetValue(User, field.Field.FormAutofillMapping.Mapping);
+                }
+            }
             return Page();
         }
 
@@ -45,10 +61,10 @@ namespace WebObrasci1.Pages
 
             if (form == null) return NotFound();
 
-            Form = form;
+            Form = DtoForm.FromForm(form);
 
             // Manual validation for required fields
-            foreach (var field in Form.Fields.Where(f => f.Required))
+            foreach (var field in form.Fields.Where(f => f.Required))
             {
                 if (!Answers.TryGetValue(field.Name, out var value) || string.IsNullOrWhiteSpace(value))
                 {
@@ -58,11 +74,11 @@ namespace WebObrasci1.Pages
 
             if (!ModelState.IsValid) return Page();
 
-            var user = await GetOrCreateUserAsync();
+            var user = await _userHelper.GetOrCreateUserAsync(User);
 
             var submission = new FormSubmission
             {
-                FormId = Form.Id,
+                FormId = form.Id,
                 UserId = user.Id,
                 DataJson = JsonSerializer.Serialize(Answers),
                 SubmittedAt = DateTime.UtcNow
@@ -74,37 +90,5 @@ namespace WebObrasci1.Pages
             return RedirectToPage("/FormsList");
         }
 
-        private async Task<User> GetOrCreateUserAsync()
-        {
-            //get data from OIDC user
-            var externalId = _userHelper.GetUserId(User);
-            var username = _userHelper.GetUserName(User);
-            var email = _userHelper.GetEmail(User);
-
-            // Check if user already exists
-            var user = await _context.Users
-                .FirstOrDefaultAsync(x => x.ExternalId == externalId);
-
-            if (user == null)
-            {
-                user = new User
-                {
-                    ExternalId = externalId,
-                    UserName = username ?? "",
-                    Email = email ?? ""
-                };
-
-                _context.Users.Add(user);
-            }
-            else
-            {
-                // Update user info on login
-                user.UserName = username ?? user.UserName;
-                user.Email = email ?? user.Email;
-            }
-
-            await _context.SaveChangesAsync();
-            return user;
-        }
     }
 }

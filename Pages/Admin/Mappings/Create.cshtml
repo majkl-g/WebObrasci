@@ -1,0 +1,11 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Mappings.CreateModel
+@{
+    <h1>Novo mapiranje</h1>
+
+    <form method="post">
+        @{
+            await Html.RenderPartialAsync("_Model.cshtml", Model);
+        }
+    </form>
+}

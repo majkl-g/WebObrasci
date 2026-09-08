@@ -1,21 +1,27 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
-using WebObrasci1.Models;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    public class CreateModel : PageModel
+    [Authorize(Roles = Role.Profesor)]
+    public class CreateModel : FieldModel
     {
         private readonly AppDbContext _context;
         public CreateModel(AppDbContext context) => _context = context;
 
-        [BindProperty]
-        public FormField Field { get; set; } = new();
-
-        public void OnGet(int formId)
+        public async Task OnGet(int formId)
         {
+            ViewData["ShowBanner"] = false;
             Field.FormId = formId;
+            AvailableMappings = await _context
+                .FormAutofillMappings
+                .Where(x => x.Active)
+                .OrderBy(x => x.Name)
+                .ThenBy(x => x.Id)
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -27,9 +33,14 @@ namespace WebObrasci1.Pages.Admin.Fields
 
                 return Page();
             }
-
-           
+                       
             // if (!ModelState.IsValid) return Page();
+
+            var currentMax = await _context.FormFields
+                .Where(x => x.FormId == Field.FormId)
+                .MaxAsync(x => x.Order);
+
+            Field.Order = (currentMax ?? 0) + 1;
 
             _context.FormFields.Add(Field);
             await _context.SaveChangesAsync();

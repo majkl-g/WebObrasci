@@ -1,32 +1,37 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
+using WebObrasci1.Pages.Admin.Forms;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Fields
 {
-    public class IndexFieldModel : PageModel
+    [Authorize(Roles = Role.Profesor)]
+    public class IndexFieldModel : FormModel
     {
         private readonly AppDbContext _context;
         public IndexFieldModel(AppDbContext context) => _context = context;
 
         public List<FormField> Fields { get; set; } = new();
 
-        [BindProperty]
-        public Form Form { get; set; } = null!;
-
         public int FormId { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int formId)
         {
+            ViewData["ShowBanner"] = false;
             FormId = formId;
 
-            Form = await _context.Forms.FindAsync(formId);
-            if (Form == null) return NotFound();
+            var form = await _context.Forms.FindAsync(formId);
+            if (form == null) return NotFound();
 
+            Form = form;
             Fields = await _context.FormFields
                 .Where(x => x.FormId == formId)
+                .OrderBy(x => x.Order)
+                .ThenBy(x => x.Id)
                 .ToListAsync();
 
             return Page();
@@ -36,13 +41,61 @@ namespace WebObrasci1.Pages.Admin.Fields
         {
             if (!ModelState.IsValid) return Page();
 
-            var form = await _context.Forms.FindAsync(Form.Id);
-            if (form == null) return NotFound();
-
-            form.Title = Form.Title;
-
+            _context.Forms.Update(Form);
             await _context.SaveChangesAsync();
             return RedirectToPage(new { formId = Form.Id });
+        }
+
+        public async Task<ActionResult> OnPostMoveUpAsync(int fieldId)
+        {
+            var field = await _context.FormFields.FirstOrDefaultAsync(x => x.Id == fieldId);
+
+            if (field != null)
+            {
+                var fieldPrevious = await _context.FormFields
+                    .Where(x => x.FormId == field.FormId)
+                    .Where(x => x.Order < field.Order)
+                    .OrderByDescending(x => x.Order)
+                    .ThenByDescending(x => x.Id)
+                    .FirstOrDefaultAsync();
+
+                if (fieldPrevious != null)
+                {
+                    var o = field.Order;
+                    field.Order = fieldPrevious.Order;
+                    fieldPrevious.Order = o;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToPage(new { formId = field?.FormId ?? 0 });
+        }
+
+        public async Task<ActionResult> OnPostMoveDownAsync(int fieldId)
+        {
+            var field = await _context.FormFields.FirstOrDefaultAsync(x => x.Id == fieldId);
+
+            if (field != null)
+            {
+                var fieldNext = await _context.FormFields
+                    .Where(x => x.FormId == field.FormId)
+                    .Where(x => x.Order > field.Order)
+                    .OrderBy(x => x.Order)
+                    .ThenBy(x => x.Id)
+                    .FirstOrDefaultAsync();
+
+                if (fieldNext != null)
+                {
+                    var o = field.Order;
+                    field.Order = fieldNext.Order;
+                    fieldNext.Order = o;
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            return RedirectToPage(new { formId = field?.FormId ?? 0 });
         }
     }
 }

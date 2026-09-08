@@ -4,8 +4,8 @@
     <h1>Novi obrazac</h1>
 
     <form method="post">
-        <label>Naslov</label>
-        <input asp-for="Form.Title" />
-        <button type="submit">Spremi</button>
+        @{
+            await Html.RenderPartialAsync("_Model.cshtml", Model);
+        }
     </form>
 }

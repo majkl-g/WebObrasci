@@ -4,10 +4,9 @@
 
     <h1>Edit Form</h1>
     <form method="post">
-        <input type="hidden" asp-for="Form.Id" />
-        <label>Title</label>
-        <input asp-for="Form.Title" />
-        <button type="submit">Save</button>
+        @{
+            await Html.RenderPartialAsync("_Model.cshtml", Model);
+        }
     </form>
 
 

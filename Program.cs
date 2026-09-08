@@ -1,10 +1,12 @@
-using WebObrasci1.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.Options;
-using WebObrasci1.Models;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Globalization;
+using WebObrasci1;
+using WebObrasci1.Data;
 using WebObrasci1.Services;
 using WebObrasci1.Settings;
 
@@ -16,30 +18,53 @@ builder.Configuration.AddEnvironmentVariables("WebObrasci_");
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<AppDbContext>();
 
-var authSettings = builder.Configuration.GetSection("AuthSettings");
-var authUrl = authSettings.GetValue<string>("AuthUrl");
-var clientId = authSettings.GetValue<string>("ClientId");
-var clientSecret = authSettings.GetValue<string>("ClientSecret");
+var authSettingsSection = builder.Configuration.GetSection("AuthSettings");
+var authSettings = authSettingsSection.Get<AuthSettings>() ?? new AuthSettings();
+
+var userSettingsSection = builder.Configuration.GetSection("UserSettings");
+var userSettings = userSettingsSection.Get<UserSettings>() ?? new UserSettings();
 
 // Add authentication and OpenIdConnect
+
+
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = "Cookies";
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = "oidc";
 })
 .AddCookie()
 .AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = authUrl;
-    options.ClientId = clientId;
-    options.ClientSecret = clientSecret;
-    options.ResponseType = "code";
+    options.Authority = authSettings.AuthUrl;
+    if (string.IsNullOrEmpty(authSettings.ReturnUrl) == false)
+    {
+        options.ReturnUrlParameter = authSettings.ReturnUrl;
+        options.AccessDeniedPath = "/";
+    }
+    options.ClientId = authSettings.ClientId;
+    options.ClientSecret = authSettings.ClientSecret;
+    options.ResponseType = OpenIdConnectResponseType.Code;
     options.SaveTokens = true;
-    //options.SaveTokens = false;
-    options.RequireHttpsMetadata = false;
-    options.ClaimActions.MapUniqueJsonKey("sub", "sub");
-    options.TokenValidationParameters.NameClaimType = "sub";
-    //options.TokenValidationParameters.RoleClaimType = "roles";
+    options.RequireHttpsMetadata = authSettings.RequireHttpsMetadata;
+
+    options.Scope.Add("offline_access");
+    options.Scope.Add("openid");
+    foreach (var scope in authSettings.Scopes)
+        options.Scope.Add(scope);
+
+    if (string.IsNullOrEmpty(userSettings.UsernameClaim) == false)
+        options.TokenValidationParameters.NameClaimType = userSettings.UsernameClaim;
+
+    options.GetClaimsFromUserInfoEndpoint = true;
+
+    options.Events = new OpenIdConnectEvents
+    {
+        OnTokenResponseReceived = context =>
+        {
+            return Task.CompletedTask;
+        },
+        OnUserInformationReceived = AuthorizationHelper.AppendUserInfoToPrincipalAsync,
+    };
 });
 
 builder.Services.AddOptions<UserSettings>()
@@ -47,8 +72,7 @@ builder.Services.AddOptions<UserSettings>()
 
 builder.Services.AddScoped<IClaimsTransformation, RoleClaimsTransformer>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
-
-
+builder.Services.AddScoped<IPdfConverter, PdfConverter>();
 
 var app = builder.Build();
 
@@ -90,7 +114,7 @@ app.UseAuthorization();
 
 app.MapGet("/logout", async context =>
 {
-    await context.SignOutAsync("Cookies");
+    await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     await context.SignOutAsync("oidc");
 });
 app.MapGet("/login", async context =>

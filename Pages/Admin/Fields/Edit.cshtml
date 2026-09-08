@@ -4,34 +4,13 @@
     <h1>Uredi polje</h1>
 
     <form method="post">
-        <input type="hidden" asp-for="Field.Id" />
-        <input type="hidden" asp-for="Field.FormId" />
-
-        <div>
-            <label asp-for="Field.Label"></label>
-            <input asp-for="Field.Label" class="form-control" />
-        </div>
-
-        <div>
-            <label asp-for="Field.Name"></label>
-            <input asp-for="Field.Name" class="form-control" />
-        </div>
-
-        <div>
-            <label asp-for="Field.Type"></label>
-            <select asp-for="Field.Type" class="form-control">
-                <option value="text">Text</option>
-                <option value="number">Number</option>
-                <option value="date">Date</option>
-                
-            </select>
-        </div>
-
-        <div>
-            <label asp-for="Field.Required"></label>
-            <input asp-for="Field.Required" type="checkbox" />
-        </div>
-
-        <button type="submit">Spremi</button>
+        @{
+            await Html.RenderPartialAsync("_Model.cshtml", Model);
+        }
     </form>
+
+    <script type="text/javascript">
+        onFieldTypeChange({ value: "@(Model.Field.Type)"});
+        refreshFieldSelectVal();
+    </script>
 }

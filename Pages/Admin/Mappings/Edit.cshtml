@@ -1,0 +1,12 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Mappings.EditModel
+@{
+
+    <h1>Edit Form</h1>
+    <form method="post">
+        @{
+            await Html.RenderPartialAsync("_Model.cshtml", Model);
+        }
+    </form>
+
+}

@@ -1,34 +1,114 @@
 ﻿@page "{id:int}"
 @model WebObrasci1.Pages.FormFillModel
 
-<h1>@Model.Form.Title</h1>
-
-<form method="post">
-    <validation-summary asp-validation-summary="All" class="text-danger"></validation-summary>
-
-    @foreach (var field in Model.Form.Fields)
-    {
-        <div class="mb-3">
-            <label>@field.Label</label>
-
-            @if (field.Type == Models.FormFieldType.Text)
-            {
-                <input name="Answers[@field.Name]" class="form-control" />
-            }
-            else if (field.Type == Models.FormFieldType.Number)
-            {
-                <input type="number" name="Answers[@field.Name]" class="form-control" />
-            }
-            else if (field.Type == Models.FormFieldType.Date)
-            {
-                <input type="date" name="Answers[@field.Name]" class="form-control" />
-            }
-            else
-            {
-                <input name="Answers[@field.Name]" class="form-control" />
-            }
+<div class="form-header">
+    <div class="form-header-content">
+        <!-- Logo Space -->
+        <div class="logo-space">
+            <img src="~/images/ritehlogo.jpg" alt="University Logo" class="logo-image" />
         </div>
-    }
 
-    <button type="submit">Priloži</button>
-</form>
+        <!-- Header Info (Top Right) -->
+        <div class="header-info">
+            <div class="form-number">Obrazac @Model.Form.Title</div>
+            <h1 class="form-title">@Model.Form.Title</h1>
+            <p class="form-subtitle">
+                Sveučilište u Rijeci – Tehnički fakultet<br>
+                Vukovarska 58 • 51000 Rijeka • Hrvatska
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="form-container">
+    <form method="post" class="pdf-form">
+
+        @foreach (var dtoField in Model.Form.Fields)
+        {
+            var field = dtoField.Field;
+
+            <div class="form-field">
+
+                @if (field.Type != Models.FormFieldType.Section && field.Type != Models.FormFieldType.SubSection)
+                {
+                    <label class="field-label">
+                        @field.Label
+                        @if (field.Required)
+                        {
+                            <span class="required-indicator">*</span>
+                        }
+                    </label>
+                }
+
+                @if (field.Type == Models.FormFieldType.Text)
+                {
+                    <input name="Answers[@field.Name]" class="field-input" placeholder="" 
+                            value="@dtoField.AutofillValue" required="@(field.Required ? "true" : null)"/>
+                }
+                else if (field.Type == Models.FormFieldType.Integer)
+                {
+                    <input type="number" step="1" name="Answers[@field.Name]" class="field-input" placeholder="" 
+                           min="@(field.MinValue ?? int.MinValue)" max="@(field.MaxValue ?? int.MaxValue)"
+                           value="@dtoField.AutofillValueInt" required="@(field.Required ? "true" : null)" />
+                }
+                else if (field.Type == Models.FormFieldType.Decimal)
+                {
+                    <input type="number" step="0.01" name="Answers[@field.Name]" class="field-input" placeholder=""
+                           min="@(field.MinValue ?? int.MinValue)" max="@(field.MaxValue ?? int.MaxValue)"
+                           value="@dtoField.AutofillValueDec" required="@(field.Required ? "true" : null)" />
+                }
+                else if (field.Type == Models.FormFieldType.Date)
+                {
+                    <input type="date" name="Answers[@field.Name]" class="field-input" 
+                            value="@dtoField.AutofillValueDate" required="@(field.Required ? "true" : null)" />
+                }
+                else if (field.Type == Models.FormFieldType.Email)
+                {
+                    <input type="email" name="Answers[@field.Name]" class="field-input" 
+                            value="@dtoField.AutofillValue" required="@(field.Required ? "true" : null)" />
+                }
+                else if (field.Type == Models.FormFieldType.CheckBox)
+                {
+                    <input type="checkbox" name="Answers[@field.Name]" class="field-input" 
+                            value="@dtoField.AutofillValueBool" required="@(field.Required ? "true" : null)" />
+                }
+                else if(field.Type == Models.FormFieldType.Select)
+                {
+                    @foreach ((var sel, int i) in field.SelectValues.Select((x, i) => (x, i)))
+                    {
+                        <div>
+                            @if (sel.Value == dtoField.AutofillValue)
+                            {
+                                <input type="radio" id="@(@field.Name + i)" name="Answers[@field.Name]"
+                                       value="@sel.Value" checked/>
+                            }
+                            else
+                            {
+                                <input type="radio" id="@(@field.Name + i)" name="Answers[@field.Name]"
+                                       value="@sel.Value" />
+                            }
+                            <label for="@(@field.Name + i)">@sel.Value</label>
+                        </div>
+                    }
+                }
+                else if (field.Type == Models.FormFieldType.Section)
+                {
+                    <h3 class="form-section-name">@field.Label</h3>
+                }
+                else if (field.Type == Models.FormFieldType.SubSection)
+                {
+                    <p class="form-subsection-name">@field.Label</p>
+                }
+                else
+                {
+                    <textarea name="Answers[@field.Name]" class="field-textarea" rows="3" 
+                            value="@dtoField.AutofillValue" required="@(field.Required ? "true" : null)"></textarea>
+                }
+            </div>
+        }
+
+        <div class="form-footer">
+            <button type="submit" class="btn-submit">Pošalji obrazac</button>
+        </div>
+    </form>
+</div>

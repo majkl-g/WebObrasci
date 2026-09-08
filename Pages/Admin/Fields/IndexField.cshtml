@@ -4,10 +4,9 @@
     <h1>Promjena naslova obrasca</h1>
 
     <form method="post">
-        <input type="hidden" asp-for="Form.Id" />
-        <label>Title</label>
-        <input asp-for="Form.Title" />
-        <button type="submit">Spremi</button>
+        @{
+            await Html.RenderPartialAsync("../Forms/_Model.cshtml", Model);
+        }
     </form>
 
     <hr />
@@ -16,7 +15,13 @@
     <a asp-page="Create" asp-route-formId="@Model.FormId">Dodaj Polje</a>
 
     <table class="table">
-        <tr><th>Naziv polja</th><th>Tip</th><th>Obavezno</th><th></th></tr>
+        <tr>
+            <th>Naziv polja</th>
+            <th>Tip</th>
+            <th>Obavezno</th>
+            <th></th>
+            <th></th>
+        </tr>
         @foreach (var f in Model.Fields)
         {
             <tr>
@@ -24,7 +29,14 @@
                 <td>@f.Type</td>
                 <td>@f.Required</td>
                 <td>
-                    @*<a asp-page="Edit" asp-route-id="@f.Id">Izmjeni</a> |*@
+                    <form method="post">
+                        <input type="hidden" name="fieldId" value="@f.Id" />
+                        <button type="submit" asp-page-handler="MoveUp" class="btn btn-sm btn-primary">↑</button>
+                        <button type="submit" asp-page-handler="MoveDown" class="btn btn-sm btn-primary">↓</button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@f.Id">Izmjeni</a> |
                     <a asp-page="Delete" asp-route-id="@f.Id">Izbriši</a>
                 </td>
             </tr>

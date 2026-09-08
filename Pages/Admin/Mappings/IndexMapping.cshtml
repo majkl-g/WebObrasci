@@ -1,0 +1,33 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Mappings.IndexMappingModel
+@{
+    <h1>Obrasci</h1>
+    <a asp-page="Create">Novo mapiranje</a>
+
+    <table class="table">
+        <tr><th>Naziv</th><th>Mapiranje</th><th>Radnja</th></tr>
+        @foreach (var f in Model.PageData.PageData)
+        {
+            <tr>
+                <td>@f.Name</td>
+                <td>@f.Mapping</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@f.Id">Izmjeni</a> |
+                    <a asp-page="Delete" asp-route-id="@f.Id">Izbriši</a> 
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="paging">
+        @if (Model.PageData.PageNumber > 1)
+        {
+            <a asp-page="IndexMapping" asp-route-pageNumber="@(Model.PageData.PageNumber - 1)" class="btn btn-sm btn-primary">Prethodna</a>
+        }
+        <p>@Model.PageData.PageNumber</p>
+        @if (Model.PageData.PageNumber < Model.PageData.TotalPages)
+        {
+            <a asp-page="IndexMapping" asp-route-pageNumber="@(Model.PageData.PageNumber + 1)" class="btn btn-sm btn-primary">Sljedeca</a>
+        }
+    </div>
+}

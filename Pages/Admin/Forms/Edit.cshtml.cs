@@ -1,23 +1,24 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
-using WebObrasci1.Models;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Forms
 {
-    public class EditModel : PageModel
+    [Authorize(Roles = Role.Profesor)]
+    public class EditModel : FormModel
     {
         private readonly AppDbContext _context;
         public EditModel(AppDbContext context) => _context = context;
 
-        [BindProperty]
-        public Form Form { get; set; }
-
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Form = await _context.Forms.FindAsync(id);
-            if (Form == null) return NotFound();
+            ViewData["ShowBanner"] = false;
+
+            var form = await _context.Forms.FindAsync(id);
+            if (form == null) return NotFound();
+            Form = form;
             return Page();
         }
 

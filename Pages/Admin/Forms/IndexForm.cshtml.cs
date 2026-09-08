@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using WebObrasci1.Data;
 using WebObrasci1.Models;
+using WebObrasci1.Services;
 
 namespace WebObrasci1.Pages.Admin.Forms
 {
+    [Authorize(Roles = Role.Profesor)]
     public class IndexFormModel : PageModel
     {
         private readonly AppDbContext _context;
@@ -20,7 +23,11 @@ namespace WebObrasci1.Pages.Admin.Forms
 
         public async Task OnGetAsync()
         {
-            Forms = await _context.Forms.ToListAsync();
+            ViewData["ShowBanner"] = false;
+            Forms = await _context.Forms
+                .OrderByDescending(x => x.Enabled)
+                .ThenBy(x => x.Title)
+                .ToListAsync();
         }
     }
 }

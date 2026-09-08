@@ -5,11 +5,12 @@
     <a asp-page="Create">Novi obrazac</a>
 
     <table class="table">
-        <tr><th>Naslov</th><th>Radnja</th></tr>
+        <tr><th>Naslov</th><th>Aktivan</th><th>Radnja</th></tr>
         @foreach (var f in Model.Forms)
         {
             <tr>
                 <td>@f.Title</td>
+                <td>@f.Enabled</td>
                 <td>
                     <a asp-page="/Admin/Fields/IndexField" asp-route-formId="@f.Id">Izmjeni</a> |
                     <a asp-page="Delete" asp-route-id="@f.Id">Izbriši</a> 

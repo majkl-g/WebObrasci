@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using System.Text.Json;
+using WebObrasci1.Data;
+using WebObrasci1.Models;
 using WebObrasci1.Settings;
 
 namespace WebObrasci1.Services
@@ -7,10 +11,12 @@ namespace WebObrasci1.Services
     public class UserHelper : IUserHelper
     {
         private IOptions<UserSettings> _userSettings;
+        private AppDbContext _context;
 
-        public UserHelper(IOptions<UserSettings> userSettings)
+        public UserHelper(IOptions<UserSettings> userSettings, AppDbContext context)
         {
             _userSettings = userSettings;
+            _context = context;
         }
 
         public string GetUserId(ClaimsPrincipal principal)
@@ -35,6 +41,74 @@ namespace WebObrasci1.Services
             if (email?.Value == null)
                 throw new UnauthorizedAccessException($"User '{principal.Identity?.Name}' does not have an Email claim '{_userSettings.Value.EmailClaim}'");
             return email.Value;
+        }
+
+        public string GetValue(ClaimsPrincipal principal, string claimName)
+        {
+            var claim = principal.Claims.FirstOrDefault(x => x.Type == claimName);
+            if (string.IsNullOrEmpty(claim?.Value) == false)
+            {
+                return claim.Value;
+            }
+            return string.Empty;
+        }
+
+        public async Task<User> GetOrCreateUserAsync(ClaimsPrincipal User)
+        {
+            //get data from OIDC user
+            var externalId = GetUserId(User);
+            var username = GetUserName(User);
+            var email = GetEmail(User);
+
+            string role = "";
+            if (User.IsInRole(Role.Profesor))
+                role = Role.Profesor;
+            else if (User.IsInRole(Role.Student))
+                role = Role.Student;
+
+            // Check if user already exists
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.ExternalId == externalId);
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    ExternalId = externalId,
+                    UserName = username ?? "",
+                    Email = email ?? "",
+                    Role = role,
+                    Title = null,
+                };
+
+                user = _context.Users.Add(user).Entity;
+            }
+            else
+            {
+                // Update user info on login
+                if (!string.IsNullOrEmpty(username) && user.UserName != username)
+                {
+                    user.UserName = username;
+                }
+                if (!string.IsNullOrEmpty(email) && user.Email != email)
+                {
+                    user.Email = email;
+                }
+  
+            }
+
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task SaveMentorAsync(ClaimsPrincipal principal, string? mentorName, string? mentorEmail)
+        {
+            var user = await GetOrCreateUserAsync(principal);
+
+            user.MentorName = mentorName;
+            user.MentorMail = mentorEmail;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

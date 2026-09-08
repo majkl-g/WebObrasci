@@ -1,0 +1,13 @@
+﻿@model WebObrasci1.Pages.Admin.Mappings.MappingModel
+@{
+	<input type="hidden" asp-for="Mapping.Id" />
+	<input type="hidden" asp-for="Mapping.RowVersion" />
+
+	<label asp-for="Mapping.Name">Naziv</label>
+	<input asp-for="Mapping.Name" class="form-control" />
+
+	<label asp-for="Mapping.Name">Mapiranje</label>
+	<input asp-for="Mapping.Mapping" class="form-control" />
+
+	<button type="submit">Save</button>
+}

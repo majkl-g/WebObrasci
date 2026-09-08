@@ -1,0 +1,12 @@
+﻿@page
+@model WebObrasci1.Pages.Admin.Mappings.DeleteModel
+@{
+    <h1>Brisanje obrasca</h1>
+
+    <p>Jeste li sigurni da želite izbrisati mapiranje:  <strong>@Model.Mapping.Name</strong> ?</p>
+    <form method="post">
+        <input type="hidden" asp-for="Mapping.Id" />
+        <button type="submit">Izbriši</button>
+    </form>
+  
+}

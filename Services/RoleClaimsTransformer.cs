@@ -18,14 +18,31 @@ namespace WebObrasci1.Services
         {
             var identity = (ClaimsIdentity)principal.Identity!;
 
-            if (principal.IsInRole(_roleSettings.Value.StudentRole) && !principal.IsInRole(Role.Student))
+            if (HasClaimValue(identity, _roleSettings.Value.StudentClaim, _roleSettings.Value.StudentClaimValue))
+            {
                 identity.AddClaim(new Claim(ClaimTypes.Role, Role.Student));
-            else if (principal.IsInRole(_roleSettings.Value.ProfesorRole) && !principal.IsInRole(Role.Profesor))
+            }
+            else if (HasClaimValue(identity, _roleSettings.Value.ProfesorClaim, _roleSettings.Value.ProfesorClaimValue)
+                && HasClaimValue(identity, _roleSettings.Value.EmailClaim, _roleSettings.Value.ProfesorMailWhitelist.ToArray()))
+            {
                 identity.AddClaim(new Claim(ClaimTypes.Role, Role.Profesor));
-            else if (principal.IsInRole(_roleSettings.Value.AdminRole) && !principal.IsInRole(Role.Admin))
-                identity.AddClaim(new Claim(ClaimTypes.Role, Role.Admin));
+            }
 
             return Task.FromResult(principal);
+        }
+
+        private bool HasClaimValue(ClaimsIdentity identity, string claimName, params string[] targetValues)
+        {
+            var claims = identity.Claims.Where(c => c.Type == claimName);
+            foreach (var claim in claims)
+            {
+                if (string.IsNullOrEmpty(claim?.Value) == false)
+                {
+                    if (targetValues.Contains(claim.Value))
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }
